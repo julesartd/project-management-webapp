@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
             id: Date.now().toString(),
             name: userData.name,
             email: userData.email,
-            password: hashedPassword, // Mot de passe sécurisé
+            password: hashedPassword,
             roles: userData.roles,
             avatar: `https://ui-avatars.com/api/?name=${userData.name}&background=random`
         }
