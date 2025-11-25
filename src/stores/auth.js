@@ -42,5 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
         window.location.reload()
     }
 
-    return { currentUser, users, register, login, logout }
+
+    function hasRole(role) {
+        return currentUser.value?.roles.includes(role)
+    }
+
+    return { currentUser, users, register, login, logout, hasRole }
 })
