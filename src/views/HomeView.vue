@@ -1,9 +1,15 @@
 <script setup>
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
-import { LogoutOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { useProjectsStore } from '@/stores/projects.js'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
+import ProjectDashboard from '@/components/projects/ProjectDashboard.vue'
 
 const authStore = useAuthStore()
+const projectsStore = useProjectsStore()
+
 const user = authStore.currentUser
+const { userProjects } = projectsStore
 
 const roleColors = {
   manager: 'purple',
@@ -13,9 +19,7 @@ const roleColors = {
 
 <template>
   <a-layout class="!min-h-screen">
-
     <a-layout-header class="!bg-white !px-6 border-b border-gray-200 shadow-sm z-10 flex justify-between items-center h-16 leading-normal">
-
       <div class="flex items-center">
         <h2 class="text-xl font-bold text-gray-800 m-0 tracking-tight">Gestion Projet</h2>
       </div>
@@ -44,37 +48,7 @@ const roleColors = {
     </a-layout-header>
 
     <a-layout-content class="p-6 md:p-10 bg-gray-50">
-
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 m-0">Tableau de bord</h1>
-
-        <a-button
-            v-if="user?.roles.includes('manager')"
-            type="primary"
-            size="large"
-            class="flex items-center shadow-md bg-blue-600 hover:bg-blue-500"
-        >
-          <template #icon><PlusOutlined /></template>
-          Nouveau Projet
-        </a-button>
-      </div>
-
-      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 min-h-[400px]">
-        <a-empty
-            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-            :image-style="{ height: '120px' }"
-            class="mt-10"
-        >
-          <template #description>
-            <span class="text-gray-500 text-lg">Aucun projet pour le moment.</span>
-          </template>
-
-          <a-button v-if="user?.roles.includes('manager')" type="primary" class="mt-4">
-            Créer mon premier projet
-          </a-button>
-        </a-empty>
-      </div>
-
+      <ProjectDashboard />
     </a-layout-content>
 
     <a-layout-footer class="text-center text-gray-500 py-6 bg-gray-50 text-sm">
