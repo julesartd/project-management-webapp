@@ -23,7 +23,7 @@ const props = defineProps({
     validator: (value) => ['primary', 'secondary', 'success', 'danger', 'purple'].includes(value)
   },
   icon: {
-    type: Object,
+    type: [Object, Function],
     default: null
   },
   loading: {

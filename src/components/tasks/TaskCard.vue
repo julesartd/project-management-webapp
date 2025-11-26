@@ -2,9 +2,7 @@
   <a-card class="task-card" :class="cardClass" hoverable>
     <template #title>
       <div class="task-title">
-        <a-typography-text :ellipsis="true" strong>
-          {{ task.title }}
-        </a-typography-text>
+        <a-typography-text :ellipsis="true" :content="task.title" strong />
         <a-tag :color="statusColor" class="status-tag">
           {{ statusLabel }}
         </a-tag>
