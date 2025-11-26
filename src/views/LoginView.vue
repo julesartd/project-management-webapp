@@ -1,8 +1,10 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import {ref, reactive, onMounted} from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons-vue'
+import { UserOutlined, LockOutlined, MailOutlined, ThunderboltOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { seedData } from '@/utils/seedData.js'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -10,6 +12,7 @@ const router = useRouter()
 const isRegistering = ref(false)
 const error = ref('')
 const loading = ref(false)
+const isDev = import.meta.env.DEV
 
 const formState = reactive({
   name: '',
@@ -43,7 +46,6 @@ const onFinish = async () => {
   }
 
   try {
-    // Petit délai simulé pour l'UX
     await new Promise(r => setTimeout(r, 500))
 
     if (isRegistering.value) {
@@ -51,24 +53,57 @@ const onFinish = async () => {
     } else {
       authStore.login(formState.email, formState.password)
     }
-    router.push('/')
+    await router.push('/')
   } catch (e) {
     error.value = e.message
   } finally {
     loading.value = false
   }
 }
+
+const runSeed = () => {
+  try {
+    seedData()
+    message.success('Données de test créées avec succès !')
+    setTimeout(() => location.reload(), 1000)
+  } catch (err) {
+    message.error('Erreur lors de la création des données')
+  }
+}
+
+
+onMounted(() => {
+  if (localStorage.getItem('seedJustCompleted') === 'true') {
+    localStorage.removeItem('seedJustCompleted')
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]')
+    const projects = JSON.parse(localStorage.getItem('projects') || '[]')
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]')
+
+    console.log('🎉 Seeding completed!')
+    console.log('\n📋 Summary:')
+    console.log(`- ${users.length} users`)
+    console.log(`- ${projects.length} projects`)
+    console.log(`- ${tasks.length} tasks`)
+    console.log('\n🔑 Login credentials:')
+    console.log('Email: manager@test.com | Password: Password123*')
+    console.log('Email: manager2@test.com | Password: Password123*')
+    console.log('Email: dev@test.com | Password: Password123*')
+    console.log('Email: dev2@test.com | Password: Password123*')
+    console.log('Email: hybrid@test.com | Password: Password123* (Manager + Dev)')
+
+    message.success(`${users.length} utilisateurs créés avec succès ! (ouvrir la console pour les identifiants)`, 5)
+  }
+})
 </script>
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-
     <a-card
         :title="isRegistering ? 'Créer un compte' : 'Connexion'"
         class="w-full max-w-md shadow-lg rounded-lg"
         :headStyle="{ textAlign: 'center', fontSize: '1.2rem' }"
     >
-
       <a-alert
           v-if="error"
           :message="error"
@@ -132,6 +167,20 @@ const onFinish = async () => {
           {{ isRegistering ? "J'ai déjà un compte" : "Créer un nouveau compte" }}
         </a>
       </div>
+
+      <a-divider v-if="isDev" />
+
+      <a-button
+          v-if="isDev"
+          type="dashed"
+          block
+          @click="runSeed"
+          size="large"
+          class="border-green-400 text-green-600 hover:border-green-500 hover:text-green-700"
+      >
+        <template #icon><ThunderboltOutlined /></template>
+        🌱 Créer données de test
+      </a-button>
     </a-card>
   </div>
 </template>
