@@ -1,3 +1,6 @@
+<!-- vue
+File: `src/components/projects/ProjectDashboard.vue`
+-->
 <template>
   <div class="project-dashboard">
     <a-page-header
@@ -25,15 +28,15 @@
         @view="handleView"
     />
 
-    <ProjectModal
-        v-model:visible="modalVisible"
+    <ProjectModalForm
+        v-model:open="modalVisible"
         :project="selectedProject"
         :mode="modalMode"
         @submit="handleSubmit"
     />
 
     <ProjectDeleteModal
-        v-model:visible="deleteModalVisible"
+        v-model:open="deleteModalVisible"
         :project="projectToDelete"
         @confirm="confirmDelete"
     />
@@ -48,7 +51,7 @@ import { PlusOutlined } from '@ant-design/icons-vue'
 import { useProjectsStore } from '@/stores/projects'
 import { useAuthStore } from '@/stores/auth'
 import ProjectList from './ProjectList.vue'
-import ProjectModal from './ProjectModal.vue'
+import ProjectModalForm from './ProjectModalForm.vue'
 import ProjectDeleteModal from './ProjectDeleteModal.vue'
 
 const router = useRouter()
@@ -82,13 +85,23 @@ function handleDelete(project) {
 }
 
 function handleView(project) {
-  router.push({ name: 'ProjectDetails', params: { id: project.id } })
+  // try common id fields, then fallback to find the project in the store
+  const id = project?.id ?? project?._id ??
+      (userProjects || []).find(p => p === project || (p.name === project.name && p.deadline === project.deadline))?.id
+
+  if (!id) {
+    message.error('Cannot open project details: missing project id')
+    console.warn('Missing project id for', project)
+    return
+  }
+
+  router.push({ name: 'ProjectDetails', params: { id } })
 }
 
 async function handleSubmit(formData) {
   try {
     if (modalMode.value === 'create') {
-      await createProject(formData)
+      createProject(formData)
       message.success('Projet créé avec succès')
     } else {
       await updateProject(selectedProject.value.id, formData)
@@ -96,7 +109,7 @@ async function handleSubmit(formData) {
     }
     modalVisible.value = false
   } catch (error) {
-    message.error(error.message)
+    message.error(error.message || 'Error')
   }
 }
 
@@ -106,7 +119,7 @@ async function confirmDelete() {
     message.success('Projet supprimé avec succès')
     deleteModalVisible.value = false
   } catch (error) {
-    message.error(error.message)
+    message.error(error.message || 'Error')
   }
 }
 </script>

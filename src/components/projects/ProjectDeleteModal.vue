@@ -1,12 +1,12 @@
 <template>
   <a-modal
-      :visible="visible"
+      :open="open"
       title="Supprimer le projet"
       ok-text="Supprimer"
       ok-type="danger"
       cancel-text="Annuler"
       @ok="$emit('confirm')"
-      @cancel="$emit('update:visible', false)"
+      @cancel="$emit('update:open', false)"
   >
     <a-alert
         message="Attention"
@@ -23,11 +23,11 @@
 
 <script setup>
 defineProps({
-  visible: Boolean,
+  open: Boolean,
   project: Object
 })
 
-defineEmits(['update:visible', 'confirm'])
+defineEmits(['update:open', 'confirm'])
 </script>
 
 <style scoped>

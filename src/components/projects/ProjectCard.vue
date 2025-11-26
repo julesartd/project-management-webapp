@@ -22,9 +22,7 @@
       </a-dropdown>
     </template>
 
-    <a-typography-paragraph :ellipsis="{ rows: 2 }" class="project-description">
-      {{ project.description }}
-    </a-typography-paragraph>
+    <a-typography-paragraph :ellipsis="{ rows: 2 }" :content="project.description" class="project-description" />
 
     <a-space direction="vertical" style="width: 100%">
       <div>
