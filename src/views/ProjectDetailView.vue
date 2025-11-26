@@ -38,8 +38,8 @@ import { useProjectsStore } from '@/stores/projects'
 import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/components/AppLayout.vue'
 import RoleSwitch from '@/components/common/RoleSwitch.vue'
-import DeveloperProjectView from '@/components/projects/DeveloperProjectView.vue'
-import ManagerProjectView from '@/components/projects/ManagerProjectView.vue'
+import DeveloperProjectView from '@/views/projects/DeveloperProjectView.vue'
+import ManagerProjectView from '@/views/projects/ManagerProjectView.vue'
 
 const props = defineProps({
   id: { type: [String, Number], required: true }

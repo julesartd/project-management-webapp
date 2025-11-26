@@ -80,10 +80,10 @@ import { message } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTasksStore } from '@/stores/tasks'
-import TaskList from '../tasks/TaskList.vue'
-import TaskForm from '../tasks/TaskForm.vue'
-import TaskComments from '../tasks/TaskComments.vue'
 import ActionButton from '@/components/common/ActionButton.vue'
+import TaskList from "@/components/tasks/TaskList.vue";
+import TaskForm from "@/components/tasks/TaskForm.vue";
+import TaskComments from "@/components/tasks/TaskComments.vue";
 
 const props = defineProps({
   project: {

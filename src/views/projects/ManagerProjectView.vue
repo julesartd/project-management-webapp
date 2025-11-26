@@ -224,11 +224,10 @@ import {
 import { useAuthStore } from '@/stores/auth'
 import { useTasksStore } from '@/stores/tasks'
 import { useProjectsStore } from '@/stores/projects'
-import TaskList from '../tasks/TaskList.vue'
-import TaskForm from '../tasks/TaskForm.vue'
-import TaskComments from '../tasks/TaskComments.vue'
-import TaskAssignModal from '../tasks/TaskAssignModal.vue'
 import ActionButton from '@/components/common/ActionButton.vue'
+import TaskList from "@/components/tasks/TaskList.vue";
+import TaskComments from "@/components/tasks/TaskComments.vue";
+import TaskForm from "@/components/tasks/TaskForm.vue";
 
 const props = defineProps({
   project: {
