@@ -16,14 +16,18 @@ export const useTasksStore = defineStore('tasks', () => {
         localStorage.setItem('tasks', JSON.stringify(tasks.value))
     }
 
-    function createTask(projectId, taskData = {}) {
+    function createTask(projectId, taskData = {}, createdBy = null) {
         const newTask = {
             id: generateId(),
             projectId: String(projectId),
             title: taskData.title || 'Untitled task',
             description: taskData.description || '',
             status: taskData.status || 'non_validé',
-            assignedTo: taskData.assignedTo ?? null,
+            assignedTo: taskData.assignedTo || [],
+            deadline: taskData.deadline || null,
+            createdBy: createdBy,
+            validatedBy: null, 
+            validatedAt: null,
             comments: taskData.comments || [],
             createdAt: new Date().toISOString(),
             updatedAt: null
@@ -48,8 +52,38 @@ export const useTasksStore = defineStore('tasks', () => {
         saveToStorage()
     }
 
-    function assignTask(taskId, userId) {
-        return updateTask(taskId, { assignedTo: userId })
+    function assignUser(taskId, userId) {
+        const task = tasks.value.find(t => String(t.id) === String(taskId))
+        if (!task) throw new Error('Task not found')
+        if (!task.assignedTo.includes(userId)) {
+            task.assignedTo.push(userId)
+            task.updatedAt = new Date().toISOString()
+            saveToStorage()
+        }
+        return task
+    }
+
+    function unassignUser(taskId, userId) {
+        const task = tasks.value.find(t => String(t.id) === String(taskId))
+        if (!task) throw new Error('Task not found')
+        task.assignedTo = task.assignedTo.filter(id => id !== userId)
+        task.updatedAt = new Date().toISOString()
+        saveToStorage()
+        return task
+    }
+
+    function validateTask(taskId, managerId) {
+        const task = tasks.value.find(t => String(t.id) === String(taskId))
+        if (!task) throw new Error('Task not found')
+        if (task.status !== 'non_validé') {
+            throw new Error('Only non-validated tasks can be validated')
+        }
+        task.status = 'validé'
+        task.validatedBy = managerId
+        task.validatedAt = new Date().toISOString()
+        task.updatedAt = new Date().toISOString()
+        saveToStorage()
+        return task
     }
 
     function addComment(taskId, comment) {
@@ -92,42 +126,39 @@ export const useTasksStore = defineStore('tasks', () => {
         return map
     })
 
+    function getTasksAssignedTo(userId) {
+        return tasks.value.filter(t => t.assignedTo.includes(userId))
+    }
+
+    function getNonValidatedTasks(projectId) {
+        return tasks.value.filter(t =>
+            String(t.projectId) === String(projectId) &&
+            t.status === 'non_validé'
+        )
+    }
+
+    function hasTaskInProject(userId, projectId) {
+        return tasks.value.some(t =>
+            String(t.projectId) === String(projectId) &&
+            t.assignedTo.includes(userId)
+        )
+    }
+
     return {
         tasks,
         createTask,
         updateTask,
         deleteTask,
-        assignTask,
+        assignUser,
+        unassignUser,
+        validateTask,
         addComment,
         toggleComplete,
         getTasksByProject,
         getTask,
+        getTasksAssignedTo,
+        getNonValidatedTasks,
+        hasTaskInProject,
         tasksCountByProject
     }
 })
-
-/* Minimal integration snippet for src/stores/projects.js:
-
-import { useTasksStore } from '@/stores/tasks'
-
-// inside setup of projects store:
-const tasksStore = useTasksStore()
-
-// replace any direct access to project.tasks with:
-// const projectTasks = () => tasksStore.getTasksByProject(projectId)
-// and use tasksStore.createTask / updateTask / deleteTask instead of project-local functions
-
-// Example: computing userProjects for developers:
-const userProjects = computed(() => {
-  if (!authStore.currentUser) return []
-  if (authStore.hasRole('manager')) return projects.value
-  if (authStore.hasRole('developer')) {
-    return projects.value.filter(project =>
-      tasksStore.getTasksByProject(project.id).some(task =>
-        String(task.assignedTo) === String(authStore.currentUser.id)
-      )
-    )
-  }
-  return []
-})
-*/

@@ -40,7 +40,7 @@
 
       <a-space>
         <a-tag color="blue">
-          {{ project.tasks?.length || 0 }} tâche(s)
+          {{ taskCount }} tâche(s)
         </a-tag>
         <a-tag v-if="isOverdue" color="red">
           En retard
@@ -63,6 +63,7 @@ import {
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useProjectsStore } from '@/stores/projects'
+import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps({
   project: {
@@ -75,6 +76,7 @@ defineEmits(['edit', 'delete', 'view'])
 
 const authStore = useAuthStore()
 const projectsStore = useProjectsStore()
+const tasksStore = useTasksStore()
 
 const canManage = computed(() => {
   return authStore.hasRole('manager') &&
@@ -83,6 +85,10 @@ const canManage = computed(() => {
 
 const formattedDeadline = computed(() =>
     new Date(props.project.deadline).toLocaleDateString('fr-FR')
+)
+
+const taskCount = computed(() =>
+    tasksStore.getTasksByProject(props.project.id).length
 )
 
 const progress = computed(() =>

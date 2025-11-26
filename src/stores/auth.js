@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import bcrypt from 'bcryptjs'
+import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
     const currentUser = ref(JSON.parse(localStorage.getItem('currentUser')) || null)
@@ -39,7 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
     function logout() {
         currentUser.value = null
         localStorage.removeItem('currentUser')
-        window.location.reload()
+        router.push('/login')
     }
 
 

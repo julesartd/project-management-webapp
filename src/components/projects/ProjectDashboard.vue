@@ -8,16 +8,14 @@ File: `src/components/projects/ProjectDashboard.vue`
         :sub-title="`${userProjects.length} projet(s)`"
     >
       <template #extra>
-        <a-button
+        <ActionButton
             v-if="hasRole('manager')"
-            type="primary"
+            variant="purple"
+            :icon="PlusOutlined"
             @click="showCreateModal"
         >
-          <template #icon>
-            <PlusOutlined />
-          </template>
           Nouveau Projet
-        </a-button>
+        </ActionButton>
       </template>
     </a-page-header>
 
@@ -53,6 +51,7 @@ import { useAuthStore } from '@/stores/auth'
 import ProjectList from './ProjectList.vue'
 import ProjectModalForm from './ProjectModalForm.vue'
 import ProjectDeleteModal from './ProjectDeleteModal.vue'
+import ActionButton from '@/components/common/ActionButton.vue'
 
 const router = useRouter()
 const projectsStore = useProjectsStore()

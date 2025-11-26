@@ -2,9 +2,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuthStore } from './auth.js'
+import { useTasksStore } from './tasks.js'
 
 export const useProjectsStore = defineStore('projects', () => {
     const authStore = useAuthStore()
+    const tasksStore = useTasksStore()
 
     const raw = JSON.parse(localStorage.getItem('projects')) || []
     const projects = ref(raw)
@@ -28,10 +30,6 @@ export const useProjectsStore = defineStore('projects', () => {
                 description: 'Refactor frontend, update styles and improve accessibility.',
                 deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14).toISOString(), // +14 days
                 managers: currentUserId ? [currentUserId] : [],
-                tasks: [
-                    { id: generateId(), title: 'Design mockups', status: 'completed', assignedTo: currentUserId },
-                    { id: generateId(), title: 'Implement layout', status: 'in_progress', assignedTo: currentUserId }
-                ],
                 createdAt: new Date().toISOString()
             },
             {
@@ -40,10 +38,6 @@ export const useProjectsStore = defineStore('projects', () => {
                 description: 'Build core features for the mobile MVP.',
                 deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(), // +30 days
                 managers: currentUserId ? [currentUserId] : [],
-                tasks: [
-                    { id: generateId(), title: 'Auth flow', status: 'in_progress', assignedTo: currentUserId },
-                    { id: generateId(), title: 'Push notifications', status: 'todo', assignedTo: null }
-                ],
                 createdAt: new Date().toISOString()
             },
             {
@@ -52,9 +46,6 @@ export const useProjectsStore = defineStore('projects', () => {
                 description: 'Improve CI, linting and developer experience.',
                 deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // +7 days
                 managers: currentUserId ? [currentUserId] : [],
-                tasks: [
-                    { id: generateId(), title: 'Add pre-commit hooks', status: 'todo', assignedTo: null }
-                ],
                 createdAt: new Date().toISOString()
             }
         ]
@@ -67,8 +58,9 @@ export const useProjectsStore = defineStore('projects', () => {
         if (!authStore.currentUser) return []
         if (authStore.hasRole('manager')) return projects.value
         if (authStore.hasRole('developer')) {
+            // Developer can only see projects where they have at least one assigned task
             return projects.value.filter(project =>
-                project.tasks?.some(task => task.assignedTo === authStore.currentUser.id)
+                tasksStore.hasTaskInProject(authStore.currentUser.id, project.id)
             )
         }
         return []
@@ -88,7 +80,6 @@ export const useProjectsStore = defineStore('projects', () => {
             description: projectData.description,
             deadline: projectData.deadline,
             managers: [authStore.currentUser?.id].filter(Boolean),
-            tasks: [],
             createdAt: new Date().toISOString()
         }
 
@@ -136,10 +127,10 @@ export const useProjectsStore = defineStore('projects', () => {
     }
 
     function getProjectProgress(projectId) {
-        const project = projects.value.find(p => p.id === projectId)
-        if (!project?.tasks || project.tasks.length === 0) return 0
-        const completed = project.tasks.filter(t => t.status === 'completed').length
-        return Math.round((completed / project.tasks.length) * 100)
+        const projectTasks = tasksStore.getTasksByProject(projectId)
+        if (projectTasks.length === 0) return 0
+        const completed = projectTasks.filter(t => t.status === 'completed').length
+        return Math.round((completed / projectTasks.length) * 100)
     }
 
     function isProjectOverdue(projectId) {
