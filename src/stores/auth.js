@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import bcrypt from 'bcryptjs'
 import router from '@/router'
+import { generateId } from '@/utils/utils'
 
 export const useAuthStore = defineStore('auth', () => {
     const currentUser = ref(JSON.parse(localStorage.getItem('currentUser')) || null)
@@ -14,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
         const salt = bcrypt.genSaltSync(10)
         const hashedPassword = bcrypt.hashSync(userData.password, salt)
         const newUser = {
-            id: Date.now().toString(),
+            id: generateId(),
             name: userData.name,
             email: userData.email,
             password: hashedPassword,

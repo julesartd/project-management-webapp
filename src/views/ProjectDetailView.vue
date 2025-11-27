@@ -59,7 +59,6 @@ import DeveloperProjectView from '@/views/projects/DeveloperProjectView.vue'
 import ManagerProjectView from '@/views/projects/ManagerProjectView.vue'
 import { BarChartOutlined } from '@ant-design/icons-vue'
 
-
 const props = defineProps({
   id: { type: [String, Number], required: true }
 })
@@ -71,7 +70,6 @@ const authStore = useAuthStore()
 const project = computed(() =>
     (projectsStore.userProjects || []).find(p => String(p.id) === String(props.id)) || null
 )
-
 const allUsers = computed(() => authStore.users || [])
 
 const hasBothRoles = computed(() => {
