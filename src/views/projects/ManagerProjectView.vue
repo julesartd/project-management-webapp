@@ -36,7 +36,6 @@
       </template>
     </a-page-header>
 
-    <!-- Dashboard Statistics -->
     <div class="dashboard-stats">
       <a-row :gutter="[16, 16]">
         <a-col :xs="24" :sm="12" :md="6">
@@ -90,7 +89,6 @@
       </a-row>
     </div>
 
-    <!-- Non-validated tasks alert -->
     <a-alert
       v-if="isProjectManager && nonValidatedTasks.length > 0"
       type="warning"
@@ -107,7 +105,6 @@
       </template>
     </a-alert>
 
-    <!-- Tasks Tabs -->
     <a-tabs v-model:activeKey="activeTab" class="tasks-tabs">
       
       <!-- Kanban -->
@@ -175,7 +172,6 @@
       
     </a-tabs>
 
-    <!-- Task Form Modal -->
     <TaskForm
       v-model:open="taskFormVisible"
       :mode="taskFormMode"
@@ -185,7 +181,6 @@
       @submit="handleTaskSubmit"
     />
 
-    <!-- Comments Modal -->
     <a-modal
       v-model:open="commentsVisible"
       :title="`Commentaires - ${selectedTask?.title || ''}`"
@@ -199,7 +194,6 @@
       />
     </a-modal>
 
-    <!-- Delete Confirmation -->
     <a-modal
       v-model:open="deleteModalVisible"
       title="Confirmer la suppression"
@@ -209,7 +203,6 @@
       <p>Cette action est irréversible.</p>
     </a-modal>
 
-    <!-- Assign Modal -->
     <TaskAssignModal
       v-model:open="assignModalVisible"
       :task="taskToAssign"
@@ -237,9 +230,10 @@ import { useAuthStore } from '@/stores/auth'
 import { useTasksStore } from '@/stores/tasks'
 import { useProjectsStore } from '@/stores/projects'
 import ActionButton from '@/components/common/ActionButton.vue'
-import TaskList from "@/components/tasks/TaskList.vue";
-import TaskComments from "@/components/tasks/TaskComments.vue";
-import TaskForm from "@/components/tasks/TaskForm.vue";
+import TaskList from '@/components/tasks/TaskList.vue'
+import TaskComments from '@/components/tasks/TaskComments.vue'
+import TaskForm from '@/components/tasks/TaskForm.vue'
+import TaskAssignModal from '@/components/tasks/TaskAssignModal.vue'
 import KanbanBoard from "@/components/tasks/KanbanBoard.vue";
 
 const props = defineProps({
@@ -271,7 +265,11 @@ const commentsVisible = ref(false)
 const deleteModalVisible = ref(false)
 const taskToDelete = ref(null)
 const assignModalVisible = ref(false)
-const taskToAssign = ref(null)
+const taskToAssignId = ref(null)
+const taskToAssign = computed(() => {
+  if (!taskToAssignId.value) return null
+  return tasksStore.getTask(taskToAssignId.value)
+})
 
 const isProjectManager = computed(() => {
   return props.project.managers?.includes(authStore.currentUser?.id)
@@ -447,33 +445,29 @@ function handleAssignTask(task) {
     message.warning('Seuls les gérants de ce projet peuvent affecter des personnes')
     return
   }
-  taskToAssign.value = task
+  taskToAssignId.value = task.id
   assignModalVisible.value = true
 }
 
 function handleAssignSubmit(selectedUserIds) {
   try {
-    const currentAssignedIds = taskToAssign.value.assignedTo || []
+    const currentAssignedIds = taskToAssign.value?.assignedTo || []
 
-    // Find users to add
     const toAdd = selectedUserIds.filter(id => !currentAssignedIds.includes(id))
 
-    // Find users to remove
     const toRemove = currentAssignedIds.filter(id => !selectedUserIds.includes(id))
 
-    // Add users
     toAdd.forEach(userId => {
-      tasksStore.assignUser(taskToAssign.value.id, userId)
+      tasksStore.assignUser(taskToAssignId.value, userId)
     })
 
-    // Remove users
     toRemove.forEach(userId => {
-      tasksStore.unassignUser(taskToAssign.value.id, userId)
+      tasksStore.unassignUser(taskToAssignId.value, userId)
     })
 
     message.success('Affectations mises à jour')
     assignModalVisible.value = false
-    taskToAssign.value = null
+    taskToAssignId.value = null
   } catch (error) {
     message.error(error.message || 'Erreur lors de la mise à jour des affectations')
   }
@@ -498,6 +492,13 @@ function handleOpenTask(task) {
 <style scoped>
 .manager-project-view {
   width: 100%;
+}
+
+.manager-project-view :deep(.ant-tag) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
 }
 
 :deep(.ant-page-header) {

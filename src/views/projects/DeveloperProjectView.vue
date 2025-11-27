@@ -48,7 +48,6 @@
       </template>
     </a-page-header>
 
-    <!-- Task Form Modal -->
     <TaskForm
       v-model:open="taskFormVisible"
       :mode="taskFormMode"
@@ -58,7 +57,6 @@
       @submit="handleTaskSubmit"
     />
 
-    <!-- Comments Modal -->
     <a-modal
       v-model:open="commentsVisible"
       :title="`Commentaires - ${selectedTask?.title || ''}`"
@@ -110,19 +108,17 @@ const selectedTask = computed(() => {
 })
 const commentsVisible = ref(false)
 
-// Get all tasks for this project
+
 const projectTasks = computed(() => {
   return tasksStore.getTasksByProject(props.project.id)
 })
 
-// Tasks assigned to current user (DISPLAYED FIRST)
 const assignedTasks = computed(() => {
   return projectTasks.value.filter(task =>
     task.assignedTo?.includes(authStore.currentUser?.id)
   )
 })
 
-// Other tasks (not assigned to current user)
 const otherTasks = computed(() => {
   return projectTasks.value.filter(task =>
     !task.assignedTo?.includes(authStore.currentUser?.id)
@@ -143,7 +139,7 @@ function handleTaskSubmit(formData) {
         {
           ...formData,
           status: 'non_validé',
-          assignedTo: [authStore.currentUser.id] // Auto-assign to creator
+          assignedTo: [authStore.currentUser.id]
         },
         authStore.currentUser.id
       )
@@ -162,7 +158,6 @@ function handleToggleComplete(task) {
       return
     }
 
-    // Developer can only complete validated tasks
     if (task.status === 'non_validé') {
       message.warning('Cette tâche doit d\'abord être validée par un manager')
       return
@@ -208,9 +203,26 @@ function handleAddComment(commentData) {
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
 }
 
 :deep(.ant-tabs) {
-  margin-top: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+:deep(.ant-tabs-nav) {
+  padding: 16px 24px 0;
+  margin-bottom: 0;
+}
+
+:deep(.ant-tabs-tab) {
+  padding: 12px 16px;
+  font-weight: 500;
+}
+
+:deep(.ant-tabs-content) {
+  padding: 16px 24px 24px;
 }
 </style>

@@ -1,102 +1,3 @@
-<template>
-  <a-card class="task-card" :class="cardClass" hoverable>
-    <template #title>
-      <div class="task-title">
-        <a-typography-text :ellipsis="true" :content="task.title" strong />
-        <a-tag :color="statusColor" class="status-tag">
-          {{ statusLabel }}
-        </a-tag>
-      </div>
-    </template>
-
-    <template #extra>
-      <a-dropdown>
-        <a-button type="text" size="small" @click.stop>
-          <MoreOutlined />
-        </a-button>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item @click="$emit('comment')">
-              <CommentOutlined /> Commenter
-            </a-menu-item>
-            <a-menu-item v-if="canAssign" @click="$emit('assign')">
-              <UserAddOutlined /> Affecter
-            </a-menu-item>
-            <a-menu-item v-if="canEdit" @click="$emit('edit')">
-              <EditOutlined /> Modifier
-            </a-menu-item>
-            <a-menu-item v-if="canValidate && task.status === 'non_validé'" @click="$emit('validate')">
-              <CheckCircleOutlined /> Valider
-            </a-menu-item>
-            <a-menu-item v-if="canDelete" danger @click="$emit('delete')">
-              <DeleteOutlined /> Supprimer
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </template>
-
-    <a-typography-paragraph
-      :ellipsis="{ rows: 2 }"
-      :content="task.description || 'Pas de description'"
-      class="task-description"
-    />
-
-    <a-space direction="vertical" style="width: 100%; margin-top: 12px" :size="8">
-      <!-- Deadline -->
-      <div v-if="task.deadline" class="task-info">
-        <CalendarOutlined />
-        <span :class="{ 'text-danger': isOverdue }">
-          {{ formattedDeadline }}
-        </span>
-        <a-tag v-if="isOverdue" color="red" size="small">En retard</a-tag>
-      </div>
-
-      <!-- Assigned users -->
-      <div v-if="task.assignedTo && task.assignedTo.length > 0" class="task-info">
-        <UserOutlined />
-        <a-avatar-group :max-count="3" size="small">
-          <a-avatar
-            v-for="userId in task.assignedTo"
-            :key="userId"
-            :src="getUserAvatar(userId)"
-            :alt="getUserName(userId)"
-          >
-            {{ getUserInitials(userId) }}
-          </a-avatar>
-        </a-avatar-group>
-      </div>
-
-      <!-- Comments count -->
-      <div v-if="task.comments && task.comments.length > 0" class="task-info">
-        <CommentOutlined />
-        <span>{{ task.comments.length }} commentaire(s)</span>
-      </div>
-
-      <!-- Actions for assigned users (Developer) -->
-      <div v-if="isAssignedToCurrentUser && task.status !== 'non_validé'" class="task-actions-center">
-        <a-button
-          v-if="!isCompleted"
-          type="primary"
-          size="small"
-          class="complete-button"
-          @click="$emit('toggle-complete')"
-        >
-          <CheckOutlined /> Terminer
-        </a-button>
-        <a-button
-          v-else
-          size="small"
-          class="uncomplete-button"
-          @click="$emit('toggle-complete')"
-        >
-          <CloseOutlined /> Rouvrir
-        </a-button>
-      </div>
-    </a-space>
-  </a-card>
-</template>
-
 <script setup>
 import { computed } from 'vue'
 import {
@@ -112,6 +13,7 @@ import {
   UserAddOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { TASK_STATUS } from '@/stores/tasks.js'
 
 const props = defineProps({
   task: {
@@ -146,26 +48,26 @@ const authStore = useAuthStore()
 
 const statusColor = computed(() => {
   const colors = {
-    'non_validé': 'orange',
-    'validé': 'blue',
+    [TASK_STATUS.NOT_VALIDATED]: 'orange',
+    [TASK_STATUS.VALIDATED]: 'blue',
     'en_cours': 'cyan',
-    'completed': 'green'
+    [TASK_STATUS.COMPLETED]: 'green'
   }
   return colors[props.task.status] || 'default'
 })
 
 const statusLabel = computed(() => {
   const labels = {
-    'non_validé': 'Non validé',
-    'validé': 'Validé',
+    [TASK_STATUS.NOT_VALIDATED]: 'Non validé',
+    [TASK_STATUS.VALIDATED]: 'Validé',
     'en_cours': 'En cours',
-    'completed': 'Terminé'
+    [TASK_STATUS.COMPLETED]: 'Terminé'
   }
   return labels[props.task.status] || props.task.status
 })
 
 const cardClass = computed(() => {
-  if (props.task.status === 'completed') return 'task-completed'
+  if (props.task.status === TASK_STATUS.COMPLETED) return 'task-completed'
   if (isOverdue.value) return 'task-overdue'
   return ''
 })
@@ -176,12 +78,12 @@ const formattedDeadline = computed(() => {
 })
 
 const isOverdue = computed(() => {
-  if (!props.task.deadline || props.task.status === 'completed') return false
+  if (!props.task.deadline || props.task.status === TASK_STATUS.COMPLETED) return false
   return new Date(props.task.deadline) < new Date()
 })
 
 const isCompleted = computed(() => {
-  return props.task.status === 'completed'
+  return props.task.status === TASK_STATUS.COMPLETED
 })
 
 const isAssignedToCurrentUser = computed(() => {
@@ -205,14 +107,126 @@ function getUserInitials(userId) {
 }
 </script>
 
+<template>
+  <a-card class="task-card" :class="cardClass" hoverable>
+    <template #title>
+      <div class="task-title">
+        <a-typography-text :ellipsis="true" :content="task.title" strong />
+        <a-tag :color="statusColor" class="status-tag">
+          {{ statusLabel }}
+        </a-tag>
+      </div>
+    </template>
+
+    <template #extra>
+      <a-dropdown>
+        <a-button type="text" size="small" @click.stop>
+          <MoreOutlined />
+        </a-button>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item @click="$emit('comment')">
+              <CommentOutlined /> Commenter
+            </a-menu-item>
+            <a-menu-item v-if="canAssign" @click="$emit('assign')">
+              <UserAddOutlined /> Affecter
+            </a-menu-item>
+            <a-menu-item v-if="canEdit" @click="$emit('edit')">
+              <EditOutlined /> Modifier
+            </a-menu-item>
+            <a-menu-item v-if="canValidate && task.status === TASK_STATUS.NOT_VALIDATED" @click="$emit('validate')">
+              <CheckCircleOutlined /> Valider
+            </a-menu-item>
+            <a-menu-item v-if="canDelete" danger @click="$emit('delete')">
+              <DeleteOutlined /> Supprimer
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </template>
+
+    <a-typography-paragraph
+        :ellipsis="{ rows: 2 }"
+        :content="task.description || 'Pas de description'"
+        class="task-description"
+    />
+
+    <a-space direction="vertical" style="width: 100%; margin-top: 8px" :size="4">
+      <div v-if="task.deadline" class="task-info">
+        <CalendarOutlined />
+        <span :class="{ 'text-danger': isOverdue }">
+          {{ formattedDeadline }}
+        </span>
+        <a-tag v-if="isOverdue" color="red" size="small">En retard</a-tag>
+      </div>
+
+      <div v-if="task.assignedTo && task.assignedTo.length > 0" class="task-info">
+        <UserOutlined />
+        <a-avatar-group :max-count="3" size="small">
+          <a-avatar
+              v-for="userId in task.assignedTo"
+              :key="userId"
+              :src="getUserAvatar(userId)"
+              :alt="getUserName(userId)"
+          >
+            {{ getUserInitials(userId) }}
+          </a-avatar>
+        </a-avatar-group>
+      </div>
+
+      <div
+        v-if="task.comments && task.comments.length > 0"
+        class="task-info task-info-clickable"
+        @click="$emit('comment')"
+      >
+        <CommentOutlined />
+        <span>{{ task.comments.length }} commentaire(s)</span>
+      </div>
+
+      <div v-if="isAssignedToCurrentUser && task.status !== TASK_STATUS.NOT_VALIDATED" class="task-actions-center">
+        <a-button
+            v-if="!isCompleted"
+            type="primary"
+            size="small"
+            class="complete-button"
+            @click="$emit('toggle-complete')"
+        >
+          <CheckOutlined /> Terminer
+        </a-button>
+        <a-button
+            v-else
+            size="small"
+            class="uncomplete-button"
+            @click="$emit('toggle-complete')"
+        >
+          <CloseOutlined /> Rouvrir
+        </a-button>
+      </div>
+    </a-space>
+  </a-card>
+</template>
+
 <style scoped>
 .task-card {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   transition: all 0.3s ease;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+.task-card :deep(.ant-card-head) {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  background: #fafafa;
+}
+
+.task-card :deep(.ant-card-body) {
+  padding: 16px;
 }
 
 .task-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d9d9d9;
 }
 
 .task-completed {
@@ -238,16 +252,32 @@ function getUserInitials(userId) {
 }
 
 .task-description {
-  margin: 0;
+  margin: 0 0 12px 0;
   color: rgba(0, 0, 0, 0.65);
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .task-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 6px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.65);
+  padding: 4px 0;
+}
+
+.task-info-clickable {
+  cursor: pointer;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.task-info-clickable:hover {
+  background-color: #f0f5ff;
+  color: #1890ff;
 }
 
 .text-danger {
@@ -258,17 +288,18 @@ function getUserInitials(userId) {
 .task-actions-center {
   display: flex;
   justify-content: center;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid #f0f0f0;
 }
 
 .complete-button,
 .uncomplete-button {
-  min-width: 130px;
+  min-width: 120px;
   font-weight: 600;
-  padding: 8px 20px;
+  padding: 6px 16px;
   height: auto;
+  font-size: 13px;
   border-radius: 6px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;

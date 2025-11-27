@@ -1,12 +1,12 @@
-// File: src/stores/tasks.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { generateId } from '@/utils/utils.js'
 
-function generateId() {
-    return (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function')
-        ? crypto.randomUUID()
-        : Date.now().toString()
-}
+export const TASK_STATUS = Object.freeze({
+    NOT_VALIDATED: 'not_validated',
+    VALIDATED: 'validated',
+    COMPLETED: 'completed'
+})
 
 export const useTasksStore = defineStore('tasks', () => {
     const raw = JSON.parse(localStorage.getItem('tasks')) || []
@@ -22,11 +22,11 @@ export const useTasksStore = defineStore('tasks', () => {
             projectId: String(projectId),
             title: taskData.title || 'Untitled task',
             description: taskData.description || '',
-            status: taskData.status || 'non_validé',
+            status: taskData.status || TASK_STATUS.NOT_VALIDATED,
             assignedTo: taskData.assignedTo || [],
             deadline: taskData.deadline || null,
             createdBy: createdBy,
-            validatedBy: null, 
+            validatedBy: null,
             validatedAt: null,
             comments: taskData.comments || [],
             createdAt: new Date().toISOString(),
@@ -75,10 +75,10 @@ export const useTasksStore = defineStore('tasks', () => {
     function validateTask(taskId, managerId) {
         const task = tasks.value.find(t => String(t.id) === String(taskId))
         if (!task) throw new Error('Task not found')
-        if (task.status !== 'non_validé') {
+        if (task.status !== TASK_STATUS.NOT_VALIDATED) {
             throw new Error('Only non-validated tasks can be validated')
         }
-        task.status = 'validé'
+        task.status = TASK_STATUS.VALIDATED
         task.validatedBy = managerId
         task.validatedAt = new Date().toISOString()
         task.updatedAt = new Date().toISOString()
@@ -104,7 +104,7 @@ export const useTasksStore = defineStore('tasks', () => {
     function toggleComplete(taskId) {
         const task = tasks.value.find(t => String(t.id) === String(taskId))
         if (!task) throw new Error('Task not found')
-        task.status = task.status === 'completed' ? 'non_validé' : 'completed'
+        task.status = task.status === TASK_STATUS.COMPLETED ? TASK_STATUS.NOT_VALIDATED : TASK_STATUS.COMPLETED
         task.updatedAt = new Date().toISOString()
         saveToStorage()
         return task
@@ -133,7 +133,7 @@ export const useTasksStore = defineStore('tasks', () => {
     function getNonValidatedTasks(projectId) {
         return tasks.value.filter(t =>
             String(t.projectId) === String(projectId) &&
-            t.status === 'non_validé'
+            t.status === TASK_STATUS.NOT_VALIDATED
         )
     }
 

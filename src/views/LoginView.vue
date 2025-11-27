@@ -1,8 +1,18 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons-vue'
+// Ajout des icônes nécessaires (DownloadOutlined, CheckCircleOutlined)
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  ThunderboltOutlined,
+  DownloadOutlined,
+  CheckCircleOutlined
+} from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { generateData } from "@/utils/initData.js"
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -10,6 +20,12 @@ const router = useRouter()
 const isRegistering = ref(false)
 const error = ref('')
 const loading = ref(false)
+const isDev = import.meta.env.DEV
+
+// --- NOUVEAUX ÉTATS POUR LE SEED ---
+const seedLoading = ref(false)
+const showSeedModal = ref(false)
+const seedCredentials = ref([]) // Stocke les utilisateurs fixes générés
 
 const formState = reactive({
   name: '',
@@ -43,7 +59,6 @@ const onFinish = async () => {
   }
 
   try {
-    // Petit délai simulé pour l'UX
     await new Promise(r => setTimeout(r, 500))
 
     if (isRegistering.value) {
@@ -51,24 +66,82 @@ const onFinish = async () => {
     } else {
       authStore.login(formState.email, formState.password)
     }
-    router.push('/')
+    await router.push('/')
   } catch (e) {
     error.value = e.message
   } finally {
     loading.value = false
   }
 }
+
+// --- LOGIQUE DU SEED ET DE LA MODALE ---
+
+const runSeed = async () => {
+  seedLoading.value = true
+  try {
+    // Petit délai pour voir le loader (UX)
+    await new Promise(r => setTimeout(r, 800))
+
+    // generateData retourne maintenant la liste des users fixes
+    const fixedUsers = generateData()
+
+    seedCredentials.value = fixedUsers
+    seedLoading.value = false
+    showSeedModal.value = true
+
+    message.success('Données générées avec succès !')
+  } catch (err) {
+    console.error(err)
+    seedLoading.value = false
+    message.error('Erreur lors de la création des données')
+  }
+}
+
+const downloadCredentials = () => {
+  // Construction du contenu Markdown
+  let content = "# 🔐 Identifiants de Test - Mock Data\n\n"
+  content += `Généré le : ${new Date().toLocaleString()}\n\n`
+  content += "---\n\n"
+
+  seedCredentials.value.forEach(user => {
+    content += `### 👤 ${user.name} (${user.roles.join(', ')})\n`
+    content += `- **Email:** ${user.email}\n`
+    content += `- **Password:** ${user.password}\n`
+    content += "\n"
+  })
+
+  // Création du Blob et téléchargement
+  const blob = new Blob([content], { type: 'text/markdown' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'identifiants_test.md'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+
+  message.success('Fichier téléchargé !')
+}
+
+const closeAndReload = () => {
+  showSeedModal.value = false
+  location.reload() // On recharge pour être sûr que le store est clean
+}
+
+onMounted(() => {
+  // Nettoyage éventuel
+  localStorage.removeItem('seedJustCompleted')
+})
 </script>
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-
     <a-card
         :title="isRegistering ? 'Créer un compte' : 'Connexion'"
         class="w-full max-w-md shadow-lg rounded-lg"
         :headStyle="{ textAlign: 'center', fontSize: '1.2rem' }"
     >
-
       <a-alert
           v-if="error"
           :message="error"
@@ -132,6 +205,62 @@ const onFinish = async () => {
           {{ isRegistering ? "J'ai déjà un compte" : "Créer un nouveau compte" }}
         </a>
       </div>
+
+      <a-divider v-if="isDev" />
+
+      <a-button
+          v-if="isDev"
+          type="dashed"
+          block
+          @click="runSeed"
+          :loading="seedLoading"
+          size="large"
+          class="border-green-400 text-green-600 hover:border-green-500 hover:text-green-700 hover:bg-green-50"
+      >
+        <template #icon><ThunderboltOutlined /></template>
+        {{ seedLoading ? 'Génération en cours...' : '🌱 Réinitialiser Données de Test' }}
+      </a-button>
     </a-card>
+
+    <a-modal
+        v-model:open="showSeedModal"
+        title="Données générées avec succès !"
+        :maskClosable="false"
+        :closable="false"
+        :footer="null"
+        centered
+    >
+      <div class="text-center mb-6">
+        <CheckCircleOutlined class="text-5xl text-green-500 mb-2" />
+        <p class="text-gray-600">
+          La base de données locale a été repeuplée.<br>
+          Voici les comptes principaux disponibles :
+        </p>
+      </div>
+
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto mb-6">
+        <div v-for="(user, index) in seedCredentials" :key="index" class="mb-4 last:mb-0 border-b last:border-0 pb-3 last:pb-0 border-gray-200">
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-bold text-gray-800">{{ user.name }}</span>
+            <a-tag :color="user.roles.includes('manager') ? 'purple' : 'blue'">
+              {{ user.roles.join(' & ') }}
+            </a-tag>
+          </div>
+          <div class="text-sm text-gray-600 font-mono bg-white p-2 rounded border">
+            <div>Email: <span class="text-blue-600 select-all">{{ user.email }}</span></div>
+            <div>Pass: <span class="text-red-500 select-all">{{ user.password }}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <a-button @click="downloadCredentials" block class="flex items-center justify-center">
+          <DownloadOutlined /> Télécharger .md
+        </a-button>
+        <a-button type="primary" @click="closeAndReload" block>
+          Fermer & Recharger
+        </a-button>
+      </div>
+    </a-modal>
   </div>
 </template>
