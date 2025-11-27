@@ -41,6 +41,7 @@
         v-model:open="modalVisible"
         :project="selectedProject"
         :mode="modalMode"
+        :users="allUsers"
         @submit="handleSubmit"
     />
 
@@ -74,6 +75,9 @@ const {createProject, updateProject, deleteProject} = projectsStore
 const {hasRole} = authStore
 
 const userProjectsComputed = computed(() => projectsStore.userProjects || [])
+const allUsers = computed(() => {
+  return (authStore.users || []).filter(user => user.roles?.includes('manager'))
+})
 
 const {filters, filteredProjects, updateFilters} = useProjectFilters(userProjectsComputed)
 

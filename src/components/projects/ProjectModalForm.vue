@@ -31,17 +31,27 @@ const formData = ref({
 
 const rules = {
   name: [
-    { required: true, message: 'Le nom est requis' },
-    { min: 3, message: 'Le nom doit contenir au moins 3 caractères' }
+    { required: true, message: 'Le nom est requis', trigger: 'blur' },
+    { min: 3, message: 'Le nom doit contenir au moins 3 caractères', trigger: 'blur' }
   ],
   managers: [
-    { type: 'array', required: true, min: 1, message: 'Au moins un manager est requis' }
+    {
+      required: true,
+      type: 'array',
+      validator: (rule, value) => {
+        if (!value || value.length === 0) {
+          return Promise.reject('Au moins un manager est requis')
+        }
+        return Promise.resolve()
+      },
+      trigger: 'change'
+    }
   ],
   description: [
-    { required: true, message: 'La description est requise' }
+    { required: true, message: 'La description est requise', trigger: 'blur' }
   ],
   deadline: [
-    { required: true, message: 'La date limite est requise' }
+    { required: true, message: 'La date limite est requise', trigger: 'change' }
   ]
 }
 
@@ -119,7 +129,6 @@ function resetForm() {
             mode="multiple"
             placeholder="Sélectionnez les managers"
             style="width: 100%"
-            allow-clear
         >
           <a-select-option
               v-for="u in users"
