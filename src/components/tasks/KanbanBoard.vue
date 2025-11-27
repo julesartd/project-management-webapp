@@ -72,8 +72,8 @@ const props = defineProps({
 const emit = defineEmits(["update-status", "open-task"]);
 
 const columns = ref([
-  { status: "non_validé", label: "Non validée", tasks: [] },
-  { status: "validé", label: "Validée", tasks: [] },
+  { status: "not_validated", label: "Non validée", tasks: [] },
+  { status: "validated", label: "Validée", tasks: [] },
   { status: "completed", label: "Terminée", tasks: [] }
 ]);
 
@@ -159,8 +159,8 @@ function getUserInitials(userId) {
 }
 
 /* Si besoin de changer les couleurs des colonnes, c'est ici */
-.kanban-column[data-status="non_validé"] { background-color: #fff1f0; }
-.kanban-column[data-status="validé"] { background-color: #e6f7ff; }
+.kanban-column[data-status="not_validated"] { background-color: #fff1f0; }
+.kanban-column[data-status="validated"] { background-color: #e6f7ff; }
 .kanban-column[data-status="completed"] { background-color: #f6ffed; }
 
 .kanban-column h3 {
