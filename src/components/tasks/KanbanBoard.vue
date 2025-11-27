@@ -149,13 +149,15 @@ function getUserInitials(userId) {
   display: flex;
   gap: 16px;
   padding: 16px;
+  width: 100%;
   overflow-x: auto;
 }
 
 .kanban-column {
   padding: 8px;
+  flex: 1;
   border-radius: 6px;
-  min-width: 250px;
+  min-width: 0;
   flex-shrink: 0;
 }
 
