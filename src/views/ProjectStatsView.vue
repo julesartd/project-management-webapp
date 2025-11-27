@@ -102,7 +102,6 @@ const projectTasks = computed(() => {
 
 const hasTasks = computed(() => projectTasks.value.length > 0)
 
-// --- Task Status Distribution ---
 const taskStatusSeries = computed(() => {
   const tasks = projectTasks.value
   const counts = {
@@ -147,13 +146,10 @@ const taskStatusOptions = computed(() => ({
   }
 }))
 
-// --- Task Assignment ---
 const assignmentSeries = computed(() => {
   const tasks = projectTasks.value
   const userCounts = {}
-  
-  // Initialize with managers and assigned users
-  // We'll just count based on assignedTo arrays
+
   tasks.forEach(t => {
     t.assignedTo.forEach(userId => {
       userCounts[userId] = (userCounts[userId] || 0) + 1
@@ -222,7 +218,6 @@ const assignmentOptions = computed(() => {
   }
 })
 
-// --- Burnup Chart ---
 const burnupSeries = computed(() => {
   if (!project.value || projectTasks.value.length === 0) return []
 
