@@ -109,6 +109,16 @@
 
     <!-- Tasks Tabs -->
     <a-tabs v-model:activeKey="activeTab" class="tasks-tabs">
+      
+      <!-- Kanban -->
+      <a-tab-pane key="kanban" tab="Kanban">
+        <KanbanBoard
+          :tasks="projectTasks"
+          @update-status="handleStatusChange"
+          @open-task="handleOpenTask"
+        />
+      </a-tab-pane>
+
       <a-tab-pane key="all" tab="Toutes les tâches">
         <TaskList
           :tasks="projectTasks"
@@ -161,6 +171,8 @@
           @assign="handleAssignTask"
         />
       </a-tab-pane>
+
+      
     </a-tabs>
 
     <!-- Task Form Modal -->
@@ -228,6 +240,7 @@ import ActionButton from '@/components/common/ActionButton.vue'
 import TaskList from "@/components/tasks/TaskList.vue";
 import TaskComments from "@/components/tasks/TaskComments.vue";
 import TaskForm from "@/components/tasks/TaskForm.vue";
+import KanbanBoard from "@/components/tasks/KanbanBoard.vue";
 
 const props = defineProps({
   project: {
@@ -246,7 +259,7 @@ const authStore = useAuthStore()
 const tasksStore = useTasksStore()
 const projectsStore = useProjectsStore()
 
-const activeTab = ref('all')
+const activeTab = ref('kanban')
 const taskFormVisible = ref(false)
 const taskFormMode = ref('create')
 const selectedTaskId = ref(null)
@@ -465,6 +478,17 @@ function handleAssignSubmit(selectedUserIds) {
     message.error(error.message || 'Erreur lors de la mise à jour des affectations')
   }
 }
+
+function handleStatusChange(taskId, newStatus) {
+  try {
+    tasksStore.updateTaskStatus(taskId, newStatus)
+    message.success('Statut de la tâche mis à jour')
+  } catch (error) {
+    message.error(error.message || 'Erreur lors de la mise à jour du statut')
+  }
+}
+
+
 </script>
 
 <style scoped>
