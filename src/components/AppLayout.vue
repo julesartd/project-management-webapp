@@ -1,10 +1,26 @@
-```vue
-<!-- File: src/components/AppLayout.vue -->
+// src/components/AppLayout.vue
+<script setup>
+import { useAuthStore } from '@/stores/auth.js'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
+
+const authStore = useAuthStore()
+const user = authStore.currentUser
+
+const roleColors = {
+  manager: 'purple',
+  developer: 'blue'
+}
+</script>
+
 <template>
   <a-layout class="!min-h-screen">
     <a-layout-header class="!bg-white !px-6 border-b border-gray-200 shadow-sm z-10 flex justify-between items-center h-16 leading-normal">
       <div class="flex items-center">
-        <h2 class="text-xl font-bold text-gray-800 m-0 tracking-tight">Gestion Projet</h2>
+        <h2 class="m-0 flex items-center">
+          <router-link to="/" class="text-xl font-bold text-gray-800 tracking-tight inline-flex items-center h-16">
+            Gestion Projet
+          </router-link>
+        </h2>
       </div>
 
       <div class="flex items-center gap-4">
@@ -35,20 +51,7 @@
     </a-layout-content>
 
     <a-layout-footer class="text-center text-gray-500 py-6 bg-gray-50 text-sm">
-      Gestion Projet ©2025 - Vue 3 & Ant Design
+      Réalisé par Jules, Kilian, Zakaria et Bastien - VueJs & Ant Design
     </a-layout-footer>
   </a-layout>
 </template>
-
-<script setup>
-import { useAuthStore } from '@/stores/auth.js'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
-
-const authStore = useAuthStore()
-const user = authStore.currentUser
-
-const roleColors = {
-  manager: 'purple',
-  developer: 'blue'
-}
-</script>

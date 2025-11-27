@@ -36,7 +36,6 @@
       </template>
     </a-page-header>
 
-    <!-- Dashboard Statistics -->
     <div class="dashboard-stats">
       <a-row :gutter="[16, 16]">
         <a-col :xs="24" :sm="12" :md="6">
@@ -90,7 +89,6 @@
       </a-row>
     </div>
 
-    <!-- Non-validated tasks alert -->
     <a-alert
       v-if="isProjectManager && nonValidatedTasks.length > 0"
       type="warning"
@@ -107,7 +105,6 @@
       </template>
     </a-alert>
 
-    <!-- Tasks Tabs -->
     <a-tabs v-model:activeKey="activeTab" class="tasks-tabs">
       <a-tab-pane key="all" tab="Toutes les tâches">
         <TaskList
@@ -163,7 +160,6 @@
       </a-tab-pane>
     </a-tabs>
 
-    <!-- Task Form Modal -->
     <TaskForm
       v-model:open="taskFormVisible"
       :mode="taskFormMode"
@@ -173,7 +169,6 @@
       @submit="handleTaskSubmit"
     />
 
-    <!-- Comments Modal -->
     <a-modal
       v-model:open="commentsVisible"
       :title="`Commentaires - ${selectedTask?.title || ''}`"
@@ -187,7 +182,6 @@
       />
     </a-modal>
 
-    <!-- Delete Confirmation -->
     <a-modal
       v-model:open="deleteModalVisible"
       title="Confirmer la suppression"
@@ -197,7 +191,6 @@
       <p>Cette action est irréversible.</p>
     </a-modal>
 
-    <!-- Assign Modal -->
     <TaskAssignModal
       v-model:open="assignModalVisible"
       :task="taskToAssign"

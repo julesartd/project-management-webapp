@@ -48,7 +48,6 @@
       </template>
     </a-page-header>
 
-    <!-- Task Form Modal -->
     <TaskForm
       v-model:open="taskFormVisible"
       :mode="taskFormMode"
@@ -58,7 +57,6 @@
       @submit="handleTaskSubmit"
     />
 
-    <!-- Comments Modal -->
     <a-modal
       v-model:open="commentsVisible"
       :title="`Commentaires - ${selectedTask?.title || ''}`"
