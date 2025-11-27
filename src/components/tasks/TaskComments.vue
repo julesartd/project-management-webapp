@@ -55,8 +55,12 @@
             html-type="submit"
             :loading="loading"
             :disabled="!newComment.trim()"
+            class="send-button"
           >
-            <SendOutlined /> Envoyer
+            <template #icon>
+              <SendOutlined />
+            </template>
+            Envoyer
           </a-button>
         </a-form-item>
       </a-form>
@@ -225,5 +229,18 @@ async function handleSubmit() {
 
 .add-comment-form :deep(.ant-form-item:last-child) {
   margin-bottom: 0;
+}
+
+.send-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.send-button :deep(.anticon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

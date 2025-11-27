@@ -44,7 +44,7 @@ export function generateData() {
         {
             name: 'Manager Test',
             email: 'manager@test.com',
-            password: 'Password123*', // Mot de passe connu
+            password: 'Password123*', 
             roles: ['manager'],
             avatar: 'https://ui-avatars.com/api/?name=Manager+Test&background=667eea&color=fff'
         },
@@ -151,14 +151,29 @@ export function generateData() {
             const nbDevs = getRandomInt(0, 2)
             for (let d = 0; d < nbDevs; d++) assignedTo.push(getRandomItem(allDevelopers).id)
 
-            const isCompleted = Math.random() > 0.4
+            // Scenarios de progression:
+            // < 0.2 (20%) = Projets en retard/bloqués (peu de tâches complétées)
+            // < 0.5 (30%) = Projets en cours moyen (quelques tâches complétées)
+            // >= 0.5 (50%) = Projets avancés (beaucoup de tâches complétées)
 
             if (progressScenario < 0.2) {
-                status = Math.random() > 0.8 ? TASK_STATUS.VALIDATED : TASK_STATUS.NOT_VALIDATED
+                // Projets en retard: 70% non validé, 20% validé, 10% complété
+                const rand = Math.random()
+                if (rand < 0.7) status = TASK_STATUS.NOT_VALIDATED
+                else if (rand < 0.9) status = TASK_STATUS.VALIDATED
+                else status = TASK_STATUS.COMPLETED
             } else if (progressScenario < 0.5) {
-                status = Math.random() > 0.1 ? TASK_STATUS.VALIDATED : TASK_STATUS.COMPLETED
+                // Projets moyens: 30% non validé, 30% validé, 40% complété
+                const rand = Math.random()
+                if (rand < 0.3) status = TASK_STATUS.NOT_VALIDATED
+                else if (rand < 0.6) status = TASK_STATUS.VALIDATED
+                else status = TASK_STATUS.COMPLETED
             } else {
-                if (isCompleted) status = Math.random() > 0.3 ? TASK_STATUS.VALIDATED : TASK_STATUS.COMPLETED
+                // Projets avancés: 15% non validé, 20% validé, 65% complété
+                const rand = Math.random()
+                if (rand < 0.15) status = TASK_STATUS.NOT_VALIDATED
+                else if (rand < 0.35) status = TASK_STATUS.VALIDATED
+                else status = TASK_STATUS.COMPLETED
             }
 
             if (status !== TASK_STATUS.NOT_VALIDATED) {

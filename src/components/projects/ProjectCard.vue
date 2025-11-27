@@ -35,6 +35,8 @@
       <a-progress
           :percent="progress"
           :status="status"
+          :show-info="true"
+          :format="() => `${progress}%`"
           size="small"
       />
 
@@ -91,13 +93,15 @@ const taskCount = computed(() =>
     tasksStore.getTasksByProject(props.project.id).length
 )
 
-const progress = computed(() =>
-    projectsStore.getProjectProgress(props.project.id)
-)
+const progress = computed(() => {
+  const prog = projectsStore.getProjectProgress(props.project.id)
+  return prog ?? 0
+})
 
-const status = computed(() =>
-    projectsStore.getProjectStatus(props.project.id)
-)
+const status = computed(() => {
+  const stat = projectsStore.getProjectStatus(props.project.id)
+  return stat || 'normal'
+})
 
 const isOverdue = computed(() =>
     projectsStore.isProjectOverdue(props.project.id)
@@ -111,14 +115,122 @@ const isAtRisk = computed(() =>
 <style scoped>
 .project-card {
   cursor: pointer;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: height 0.3s ease;
+}
+
+.project-card:hover::before {
+  height: 6px;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+}
+
+.project-card :deep(.ant-card-head) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+}
+
+.project-card :deep(.ant-card-head-title) {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.project-card :deep(.ant-card-body) {
+  padding: 20px;
 }
 
 .project-description {
   margin-bottom: 16px;
   color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 44px;
 }
 
 .ml-2 {
   margin-left: 8px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.project-card :deep(.ant-progress) {
+  margin: 12px 0;
+}
+
+.project-card :deep(.ant-progress-inner) {
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 10px;
+}
+
+.project-card :deep(.ant-progress-bg) {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.project-card :deep(.ant-tag) {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.project-card :deep(.ant-space-item) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.project-card :deep(.anticon) {
+  color: #667eea;
+  font-size: 16px;
+}
+
+/* Dropdown styling */
+.project-card :deep(.ant-dropdown-trigger) {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.project-card :deep(.ant-dropdown-trigger:hover) {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    border-radius: 12px;
+  }
+
+  .project-card :deep(.ant-card-head),
+  .project-card :deep(.ant-card-body) {
+    padding: 16px;
+  }
+
+  .project-description {
+    font-size: 13px;
+    min-height: 40px;
+  }
 }
 </style>

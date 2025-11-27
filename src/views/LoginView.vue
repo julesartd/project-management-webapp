@@ -2,7 +2,6 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
-// Ajout des icônes nécessaires (DownloadOutlined, CheckCircleOutlined)
 import {
   UserOutlined,
   LockOutlined,
@@ -25,7 +24,7 @@ const isDev = import.meta.env.DEV
 // --- NOUVEAUX ÉTATS POUR LE SEED ---
 const seedLoading = ref(false)
 const showSeedModal = ref(false)
-const seedCredentials = ref([]) // Stocke les utilisateurs fixes générés
+const seedCredentials = ref([]) 
 
 const formState = reactive({
   name: '',
@@ -74,15 +73,11 @@ const onFinish = async () => {
   }
 }
 
-// --- LOGIQUE DU SEED ET DE LA MODALE ---
-
 const runSeed = async () => {
   seedLoading.value = true
   try {
-    // Petit délai pour voir le loader (UX)
     await new Promise(r => setTimeout(r, 800))
 
-    // generateData retourne maintenant la liste des users fixes
     const fixedUsers = generateData()
 
     seedCredentials.value = fixedUsers
@@ -98,7 +93,6 @@ const runSeed = async () => {
 }
 
 const downloadCredentials = () => {
-  // Construction du contenu Markdown
   let content = "# 🔐 Identifiants de Test - Mock Data\n\n"
   content += `Généré le : ${new Date().toLocaleString()}\n\n`
   content += "---\n\n"
@@ -110,7 +104,6 @@ const downloadCredentials = () => {
     content += "\n"
   })
 
-  // Création du Blob et téléchargement
   const blob = new Blob([content], { type: 'text/markdown' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -126,11 +119,10 @@ const downloadCredentials = () => {
 
 const closeAndReload = () => {
   showSeedModal.value = false
-  location.reload() // On recharge pour être sûr que le store est clean
+  location.reload() 
 }
 
 onMounted(() => {
-  // Nettoyage éventuel
   localStorage.removeItem('seedJustCompleted')
 })
 </script>

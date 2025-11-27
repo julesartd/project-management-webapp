@@ -2,7 +2,7 @@
   <AppLayout>
     <div class="space-y-6">
       <div class="flex items-center gap-4 mb-6">
-        <a-button class="!flex !items-center" @click="router.back()">
+        <a-button class="flex! items-center!" @click="router.back()">
           <template #icon><ArrowLeftOutlined /></template>
           Retour
         </a-button>
@@ -81,7 +81,6 @@ import AppLayout from '@/components/AppLayout.vue'
 import VueApexCharts from 'vue3-apexcharts'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 
-// Register locally
 const apexchart = VueApexCharts
 
 const route = useRoute()

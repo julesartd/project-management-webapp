@@ -5,17 +5,15 @@
       :title="project.name"
       :sub-title="project.description"
     >
-      <template #tags>
-        <a-tag v-if="isProjectManager" color="green">
-          <CheckCircleOutlined /> Vous gérez ce projet
-        </a-tag>
-        <a-tag v-else color="orange">
-          <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
-        </a-tag>
-      </template>
-
       <template #extra>
-        <a-space>
+        <div class="header-actions-container">
+          <a-tag v-if="isProjectManager" color="green" class="manager-status-badge">
+            <CheckCircleOutlined /> Vous gérez ce projet
+          </a-tag>
+          <a-tag v-else color="orange" class="manager-status-badge">
+            <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
+          </a-tag>
+
           <ActionButton
             v-if="!isProjectManager"
             variant="secondary"
@@ -32,7 +30,7 @@
           >
             Nouvelle tâche
           </ActionButton>
-        </a-space>
+        </div>
       </template>
     </a-page-header>
 
@@ -255,7 +253,9 @@ const authStore = useAuthStore()
 const tasksStore = useTasksStore()
 const projectsStore = useProjectsStore()
 
-const activeTab = ref('kanban')
+// Detect mobile and set default tab accordingly
+const isMobile = ref(window.innerWidth <= 768)
+const activeTab = ref(isMobile.value ? 'all' : 'kanban')
 const taskFormVisible = ref(false)
 const taskFormMode = ref('create')
 const selectedTaskId = ref(null)
@@ -533,5 +533,41 @@ function handleOpenTask(task) {
 :deep(.ant-statistic-content) {
   font-size: 24px;
   font-weight: 600;
+}
+
+/* Header actions container */
+.header-actions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.manager-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide Kanban tab on mobile */
+@media (max-width: 768px) {
+  .tasks-tabs :deep(.ant-tabs-tab:first-child) {
+    display: none !important;
+  }
+
+  .header-actions-container {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .manager-status-badge {
+    justify-content: center;
+    width: 100%;
+  }
 }
 </style>
