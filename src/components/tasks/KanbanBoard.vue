@@ -18,7 +18,7 @@
         @start="checkCanDrag"
       >
         <template #item="{ element }">
-          <div class="kanban-task" @dblclick="openTask(element)">
+          <div class="kanban-task" @dblclick="openTask(element)" :title="'Double-cliquez pour ouvrir la tâche'">
             <p class="task-title">{{ element.title }}</p>
             <p class="task-deadline" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
