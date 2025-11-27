@@ -142,15 +142,6 @@ function getUserInitials(userId) {
 
 <style scoped>
 
-.kanban-task {
-  cursor: grab;
-}
-
-.kanban-task:disabled,
-.kanban-task[draggable="false"] {
-  cursor: not-allowed;
-}
-
 .task-avatars {
   margin-top: 8px;
   display: flex;
