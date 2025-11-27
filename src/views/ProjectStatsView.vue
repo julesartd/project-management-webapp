@@ -81,7 +81,6 @@ import AppLayout from '@/components/AppLayout.vue'
 import VueApexCharts from 'vue3-apexcharts'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 
-// Register locally
 const apexchart = VueApexCharts
 
 const route = useRoute()

@@ -3,7 +3,7 @@ import {useProjectsStore} from '@/stores/projects'
 import {useTasksStore, TASK_STATUS} from '@/stores/tasks'
 
 const CONFIG = {
-    GENERATED_USER_COUNT: 12, // Nombre d'utilisateurs aléatoires en PLUS des fixes
+    GENERATED_USER_COUNT: 12,
     PROJECT_COUNT: 40,
     MIN_TASKS: 5,
     MAX_TASKS: 25,
@@ -44,7 +44,7 @@ export function generateData() {
         {
             name: 'Manager Test',
             email: 'manager@test.com',
-            password: 'Password123*', // Mot de passe connu
+            password: 'Password123*',
             roles: ['manager'],
             avatar: 'https://ui-avatars.com/api/?name=Manager+Test&background=667eea&color=fff'
         },
