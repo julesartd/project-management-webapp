@@ -15,6 +15,7 @@
         class="kanban-drop-area"
         @end="onDragEnd"
         :move="allowDrop"
+        @start="checkCanDrag"
       >
         <template #item="{ element }">
           <div class="kanban-task" @dblclick="openTask(element)">
@@ -56,10 +57,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import draggable from "vuedraggable";
 import { CommentOutlined } from '@ant-design/icons-vue'
 import { TASK_STATUS } from "@/stores/tasks";
+import { message } from "ant-design-vue";
 
 
 const props = defineProps({
@@ -67,7 +69,8 @@ const props = defineProps({
   users: {
     type: Array,
     default: () => []
-  }
+  },
+  isProjectManager: { type: Boolean, default: false }
 });
 
 const emit = defineEmits(["update-status", "open-task", "comment"]);
@@ -84,6 +87,8 @@ const updateColumns = () => {
   });
 };
 
+const canDrag = computed(() => props.isProjectManager);
+
 watch(() => props.tasks, updateColumns, { immediate: true, deep: true });
 
 function onDragEnd(event) {
@@ -94,8 +99,15 @@ function onDragEnd(event) {
   emit("update-status", task.id, newStatus);
 }
 
-function allowDrop() { 
-  return true; 
+function checkCanDrag(event) {
+  if (!canDrag.value) {
+    message.warning("Vous n'avez pas la permission de déplacer les tâches.");
+    event.preventDefault?.();
+  }
+}
+
+function allowDrop(event) {
+  return canDrag.value; 
 }
 
 function formatDate(dateStr) { 
@@ -130,6 +142,15 @@ function getUserInitials(userId) {
 
 <style scoped>
 
+.kanban-task {
+  cursor: grab;
+}
+
+.kanban-task:disabled,
+.kanban-task[draggable="false"] {
+  cursor: not-allowed;
+}
+
 .task-avatars {
   margin-top: 8px;
   display: flex;
@@ -156,9 +177,13 @@ function getUserInitials(userId) {
 .kanban-column {
   padding: 8px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   border-radius: 6px;
   min-width: 0;
   flex-shrink: 0;
+  min-height: 300px;
 }
 
 /* Si besoin de changer les couleurs des colonnes, c'est ici */
@@ -171,14 +196,16 @@ function getUserInitials(userId) {
   margin-bottom: 8px;
   font-weight: 600;
   color: #333;
+  min-height: 0;
 }
 
 .kanban-drop-area {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 4px;
-  min-height: 50px;
+  gap: 10px;
+  flex: 1;
+  padding: 10px;
+  min-height: 300px;
 }
 
 .kanban-task {

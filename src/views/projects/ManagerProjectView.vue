@@ -111,6 +111,7 @@
         <KanbanBoard
           :tasks="projectTasks"
           :users="allUsers"
+          :is-project-manager="isProjectManager"
           @update-status="handleStatusChange"
           @open-task="handleOpenTask"
           @comment="handleComment"
