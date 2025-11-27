@@ -1,15 +1,12 @@
-<!-- File: src/views/ProjectDetailView.vue -->
 <template>
   <AppLayout>
     <div style="padding: 24px">
-      <!-- RoleSwitch for users with both roles -->
       <RoleSwitch
         v-if="hasBothRoles"
         v-model="currentRole"
         @role-changed="handleRoleChange"
       />
 
-      <!-- Developer View -->
       <DeveloperProjectView
         v-if="showDeveloperView && project"
         :project="project"
@@ -17,7 +14,6 @@
         @back="goBack"
       />
 
-      <!-- Manager View -->
       <ManagerProjectView
         v-else-if="showManagerView && project"
         :project="project"
@@ -25,7 +21,6 @@
         @back="goBack"
       />
 
-      <!-- Project not found -->
       <a-empty v-else-if="!project" description="Projet introuvable" />
 
       <!-- Stats Button (Floating or integrated) -->

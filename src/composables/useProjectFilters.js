@@ -4,7 +4,6 @@ import { ProjectFilterService } from '@/services/projectFilterService'
 export function useProjectFilters(projects) {
     const filters = ref({
         search: '',
-        status: null,
         deadlineFrom: null,
         deadlineTo: null
     })
@@ -17,7 +16,6 @@ export function useProjectFilters(projects) {
     const hasActiveFilters = computed(() => {
         return !!(
             filters.value.search ||
-            filters.value.status ||
             filters.value.deadlineFrom ||
             filters.value.deadlineTo
         )
@@ -30,7 +28,6 @@ export function useProjectFilters(projects) {
     function resetFilters() {
         filters.value = {
             search: '',
-            status: null,
             deadlineFrom: null,
             deadlineTo: null
         }

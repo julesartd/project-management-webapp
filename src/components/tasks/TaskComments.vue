@@ -1,6 +1,5 @@
 <template>
   <div class="task-comments">
-    <!-- Comments List -->
     <div v-if="task.comments && task.comments.length > 0" class="comments-list">
       <div
         v-for="comment in sortedComments"
@@ -31,7 +30,6 @@
 
     <a-divider />
 
-    <!-- Add Comment Form -->
     <div class="add-comment-form">
       <div class="comment-form-header">
         <a-avatar :src="currentUser?.avatar" :alt="currentUser?.name" size="small">

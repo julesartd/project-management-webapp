@@ -15,20 +15,6 @@
         </a-col>
 
         <a-col :xs="24" :sm="12" :lg="6">
-          <a-select
-              v-model:value="localFilters.status"
-              placeholder="Statut"
-              allow-clear
-              style="width: 100%"
-              @change="emitFilters"
-          >
-            <a-select-option value="not_started">Non démarré</a-select-option>
-            <a-select-option value="in_progress">En cours</a-select-option>
-            <a-select-option value="completed">Terminé</a-select-option>
-          </a-select>
-        </a-col>
-
-        <a-col :xs="24" :sm="12" :lg="6">
           <a-date-picker
               v-model:value="localFilters.deadlineFrom"
               placeholder="Échéance à partir de"
@@ -75,7 +61,6 @@ const props = defineProps({
     type: Object,
     default: () => ({
       search: '',
-      status: null,
       deadlineFrom: null,
       deadlineTo: null
     })
@@ -92,7 +77,6 @@ watch(() => props.modelValue, (newVal) => {
 
 const hasActiveFilters = computed(() => {
   return localFilters.value.search ||
-      localFilters.value.status ||
       localFilters.value.deadlineFrom ||
       localFilters.value.deadlineTo
 })
@@ -100,7 +84,6 @@ const hasActiveFilters = computed(() => {
 const activeFiltersCount = computed(() => {
   let count = 0
   if (localFilters.value.search) count++
-  if (localFilters.value.status) count++
   if (localFilters.value.deadlineFrom) count++
   if (localFilters.value.deadlineTo) count++
   return count
@@ -114,7 +97,6 @@ function emitFilters() {
 function resetFilters() {
   localFilters.value = {
     search: '',
-    status: null,
     deadlineFrom: null,
     deadlineTo: null
   }
