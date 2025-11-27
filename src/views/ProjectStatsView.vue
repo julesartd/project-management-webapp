@@ -110,12 +110,16 @@ const taskStatusSeries = computed(() => {
   }
 
   tasks.forEach(t => {
-    if (counts[t.status] !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(counts, t.status)) {
       counts[t.status]++
     }
   })
 
-  return [counts[TASK_STATUS.NOT_VALIDATED], counts[TASK_STATUS.VALIDATED], counts[TASK_STATUS.COMPLETED]]
+  return [
+    counts[TASK_STATUS.NOT_VALIDATED],
+    counts[TASK_STATUS.VALIDATED],
+    counts[TASK_STATUS.COMPLETED]
+  ]
 })
 
 const taskStatusOptions = computed(() => ({
