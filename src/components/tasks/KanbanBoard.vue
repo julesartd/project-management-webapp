@@ -1,10 +1,15 @@
 <template>
   <div class="kanban-board">
-    <div class="kanban-column" v-for="column in columns" :key="column.status" :data-status="column.status">
+    <div
+      class="kanban-column"
+      v-for="column in columns"
+      :key="column.status"
+      :data-status="column.status"
+    >
       <h3>{{ column.label }} ({{ column.tasks.length }})</h3>
 
       <draggable
-        :list="column.tasks"
+        v-model="column.tasks"
         group="tasks"
         item-key="id"
         class="kanban-drop-area"
@@ -17,6 +22,10 @@
             <p class="task-deadline" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
             </p>
+            
+            <div v-if="element.comments?.length" class="task-comments">
+              💬 {{ element.comments.length }}
+            </div>
           </div>
         </template>
       </draggable>
@@ -29,10 +38,7 @@ import { ref, watch } from "vue";
 import draggable from "vuedraggable";
 
 const props = defineProps({
-  tasks: {
-    type: Array,
-    required: true
-  }
+  tasks: { type: Array, required: true }
 });
 
 const emit = defineEmits(["update-status", "open-task"]);
@@ -49,43 +55,27 @@ const updateColumns = () => {
   });
 };
 
-// watch(
-//   () => props.tasks,
-//   () => updateColumns(),
-//   { immediate: true, deep: true }
-// );
-
-watch(
-  () => props.tasks,
-  updateColumns,
-  { immediate: true, deep: true }
-);
+watch(() => props.tasks, updateColumns, { immediate: true, deep: true });
 
 function onDragEnd(event) {
-  const movedTask = event.item.__draggable_context.element; // l'élément "task" réel
-  const newStatus = event.to.closest(".kanban-column").dataset.status;
+  const task = event.item.__draggable_context.element;
+  const newStatus = event.to.closest(".kanban-column")?.dataset.status;
+  if (!newStatus || task.status === newStatus) return;
 
-  if (movedTask.status !== newStatus) {
-    movedTask.status = newStatus;
-    emit("update-status", movedTask.id, newStatus);
-    updateColumns(); // pour refléter les changements dans le Kanban
-  }
+  emit("update-status", task.id, newStatus);
 }
 
-function allowDrop() {
-  return true;
+function allowDrop() { 
+  return true; 
 }
 
-function openTask(task) {
+function formatDate(dateStr) { 
+  return new Date(dateStr).toLocaleDateString(); 
+}
+
+function openTask(task) { 
   emit("open-task", task);
 }
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString();
-}
-
-columns.value.forEach(col => col.columnStatus = col.status);
 </script>
 
 <style scoped>
@@ -97,16 +87,22 @@ columns.value.forEach(col => col.columnStatus = col.status);
 }
 
 .kanban-column {
-  background: #f5f5f5;
   padding: 8px;
   border-radius: 6px;
   min-width: 250px;
   flex-shrink: 0;
 }
 
+/* Si besoin de changer les couleurs des colonnes, c'est ici */
+.kanban-column[data-status="non_validé"] { background-color: #fff1f0; }
+.kanban-column[data-status="validé"] { background-color: #e6f7ff; }
+.kanban-column[data-status="completed"] { background-color: #f6ffed; }
+
 .kanban-column h3 {
   text-align: center;
   margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
 }
 
 .kanban-drop-area {
@@ -123,20 +119,14 @@ columns.value.forEach(col => col.columnStatus = col.status);
   padding: 8px;
   cursor: grab;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s;
 }
 
-.kanban-task:hover {
-  background: #e6f7ff;
-}
+.kanban-task:hover { background: #f0f5ff; }
 
-.task-title {
-  font-weight: 600;
-  margin: 0;
-}
+.task-title { font-weight: 600; margin: 0; }
+.task-deadline { font-size: 12px; color: #888; margin-top: 4px; }
 
-.task-deadline {
-  font-size: 12px;
-  color: #888;
-  margin: 4px 0 0;
-}
+.task-assigned { margin-top: 6px; }
+.task-comments { font-size: 12px; color: #888; margin-top: 4px; }
 </style>
