@@ -30,7 +30,7 @@
             type="primary" 
             shape="circle" 
             size="large" 
-            class="!h-14 !w-14 !shadow-lg !flex !items-center !justify-center"
+            class="h-14! w-14! shadow-lg! flex! items-center! justify-center!"
             @click="router.push({ name: 'ProjectStats', params: { id: project.id } })"
           >
             <template #icon>

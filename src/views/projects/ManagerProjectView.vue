@@ -215,7 +215,7 @@ import {
   WarningOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
-import { useTasksStore } from '@/stores/tasks'
+import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
 import { useProjectsStore } from '@/stores/projects'
 import ActionButton from '@/components/common/ActionButton.vue'
 import TaskList from '@/components/tasks/TaskList.vue'
@@ -273,7 +273,8 @@ const nonValidatedTasks = computed(() => {
 
 const overdueTasks = computed(() => {
   return projectTasks.value.filter(task => {
-    if (!task.deadline || task.status === 'completed') return false
+    if (!task.deadline) return false
+    if (task.status === TASK_STATUS.COMPLETED) return false
     return new Date(task.deadline) < new Date()
   })
 })
@@ -283,9 +284,11 @@ const projectProgress = computed(() => {
 })
 
 const inProgressCount = computed(() => {
-  return projectTasks.value.filter(t =>
-    t.status !== 'completed' && t.status !== 'non_validé'
-  ).length
+  return projectTasks.value.filter(t => {
+    const isCompleted = t.status === TASK_STATUS.COMPLETED
+    const isNotValidated = t.status === TASK_STATUS.NOT_VALIDATED
+    return !isCompleted && !isNotValidated
+  }).length
 })
 
 const overdueCount = computed(() => {
@@ -355,7 +358,7 @@ function handleTaskSubmit(formData) {
         props.project.id,
         {
           ...formData,
-          status: 'validé'
+          status: TASK_STATUS.VALIDATED
         },
         authStore.currentUser.id
       )
@@ -401,7 +404,7 @@ function handleToggleComplete(task) {
   try {
     tasksStore.toggleComplete(task.id)
     message.success(
-      task.status === 'completed'
+      task.status === TASK_STATUS.COMPLETED
         ? 'Tâche marquée comme terminée'
         : 'Tâche marquée comme non terminée'
     )

@@ -77,7 +77,7 @@ import { ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
-import { useTasksStore } from '@/stores/tasks'
+import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
 import ActionButton from '@/components/common/ActionButton.vue'
 import TaskList from "@/components/tasks/TaskList.vue";
 import TaskForm from "@/components/tasks/TaskForm.vue";
@@ -138,7 +138,7 @@ function handleTaskSubmit(formData) {
         props.project.id,
         {
           ...formData,
-          status: 'non_validé',
+          status: TASK_STATUS.NOT_VALIDATED,
           assignedTo: [authStore.currentUser.id]
         },
         authStore.currentUser.id
@@ -158,14 +158,14 @@ function handleToggleComplete(task) {
       return
     }
 
-    if (task.status === 'non_validé') {
+    if (task.status === TASK_STATUS.NOT_VALIDATED) {
       message.warning('Cette tâche doit d\'abord être validée par un manager')
       return
     }
 
     tasksStore.toggleComplete(task.id)
 
-    if (task.status === 'completed') {
+    if (task.status === TASK_STATUS.COMPLETED) {
       message.success('Tâche marquée comme terminée')
     } else {
       message.success('Tâche marquée comme non terminée')
