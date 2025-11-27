@@ -77,7 +77,7 @@ import { ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
-import {TASK_STATUS, useTasksStore} from '@/stores/tasks'
+import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
 import ActionButton from '@/components/common/ActionButton.vue'
 import TaskList from "@/components/tasks/TaskList.vue";
 import TaskForm from "@/components/tasks/TaskForm.vue";

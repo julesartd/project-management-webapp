@@ -21,10 +21,9 @@ const error = ref('')
 const loading = ref(false)
 const isDev = import.meta.env.DEV
 
-// --- NOUVEAUX ÉTATS POUR LE SEED ---
 const seedLoading = ref(false)
 const showSeedModal = ref(false)
-const seedCredentials = ref([]) 
+const seedCredentials = ref([])
 
 const formState = reactive({
   name: '',
@@ -119,7 +118,7 @@ const downloadCredentials = () => {
 
 const closeAndReload = () => {
   showSeedModal.value = false
-  location.reload() 
+  location.reload()
 }
 
 onMounted(() => {

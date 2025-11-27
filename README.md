@@ -1,38 +1,75 @@
-# project-management-webapp
+# Projet Gestion de projet WebApp
 
-This template should help get you started developing with Vue 3 in Vite.
+## Membres du groupe
 
-## Recommended IDE Setup
+- Jules
+- Kilian
+- Zakaria
+- Bastien
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## A. Contexte
 
-## Recommended Browser Setup
+Cette plateforme permet de gérer des projets, créer des tâches, affecter des personnes et suivre l’avancement. Deux rôles sont présents : **developer** (développeur) et **manager** (gestionnaire). Un utilisateur peut cumuler les deux rôles.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+---
 
-## Customize configuration
+## B. Fonctionnalités
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### Pour le rôle developer
 
-## Project Setup
+- Voir la liste des projets où au moins une tâche lui est affectée
+- Créer des tâches dans les projets visibles (statut initial : "Non validé")
+- Voir toutes les tâches d’un projet visible (affectées ou non)
+- Commenter chaque tâche visible
+- Voir la liste des tâches qui lui sont affectées
+- Marquer ses tâches comme complétées
 
-```sh
-npm install
-```
+### Pour le rôle manager
 
-### Compile and Hot-Reload for Development
+- Créer, modifier et supprimer des projets
+- Voir la liste de tous les projets
+- Se désigner comme gestionnaire d’un projet (plusieurs managers possibles)
+- Pour les projets gérés :
+  - Créer, modifier, supprimer toutes les tâches
+  - Valider les tâches soumises par les développeurs
+  - Affecter/désaffecter des personnes à une tâche
+  - Afficher une vue synthétique des tâches et de l’avancement global, incluant les projets en retard ou à risque
 
-```sh
-npm run dev
-```
+---
 
-### Compile and Minify for Production
+## C. Stockage de l'information
 
-```sh
-npm run build
-```
+- Stockage semi-persistant : `localStorage` côté client
+
+
+## D. Bonus
+
+- **Script de génération de donnée** disponible sur le formulaire de connexion (route /login)
+- **Filtres sur les projets** (par nom, échéance, etc.)
+- **Vue Kanban** dans le détail d’un projet avec drag & drop des tâches
+- **Vue de statistiques** sur le détail d’un projet (icône flottante en bas à droite)
+
+---
+
+## E. Installation et lancement
+
+1. **Cloner le dépôt :**
+   ```sh
+   git clone git@github.com:julesartd/project-management-webapp.git
+   cd project-management-webapp
+   ```
+
+2. **Installer les dépendances :**
+   ```sh
+   npm install
+   ```
+
+3. **Lancer le serveur de développement :**
+   ```sh
+   npm run dev
+   ```
+
+4. **Accéder à l’application :**
+   Ouvrir [http://localhost:5173](http://localhost:5173) dans un navigateur.
+
+---

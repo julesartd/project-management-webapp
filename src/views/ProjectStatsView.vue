@@ -75,7 +75,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProjectsStore } from '@/stores/projects'
-import { useTasksStore } from '@/stores/tasks'
+import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
 import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/components/AppLayout.vue'
 import VueApexCharts from 'vue3-apexcharts'
@@ -104,18 +104,22 @@ const hasTasks = computed(() => projectTasks.value.length > 0)
 const taskStatusSeries = computed(() => {
   const tasks = projectTasks.value
   const counts = {
-    non_validé: 0,
-    validé: 0,
-    completed: 0
+    [TASK_STATUS.NOT_VALIDATED]: 0,
+    [TASK_STATUS.VALIDATED]: 0,
+    [TASK_STATUS.COMPLETED]: 0
   }
 
   tasks.forEach(t => {
-    if (counts[t.status] !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(counts, t.status)) {
       counts[t.status]++
     }
   })
 
-  return [counts.non_validé, counts.validé, counts.completed]
+  return [
+    counts[TASK_STATUS.NOT_VALIDATED],
+    counts[TASK_STATUS.VALIDATED],
+    counts[TASK_STATUS.COMPLETED]
+  ]
 })
 
 const taskStatusOptions = computed(() => ({
@@ -238,7 +242,7 @@ const burnupSeries = computed(() => {
       })
     }
 
-    if (t.status === 'completed') {
+    if (t.status === TASK_STATUS.COMPLETED) {
       const completedTime = t.updatedAt ? new Date(t.updatedAt).getTime() : now
       events.push({
         time: completedTime,
