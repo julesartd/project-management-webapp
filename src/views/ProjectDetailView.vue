@@ -27,6 +27,23 @@
 
       <!-- Project not found -->
       <a-empty v-else-if="!project" description="Projet introuvable" />
+
+      <!-- Stats Button (Floating or integrated) -->
+      <div v-if="project" class="fixed bottom-8 right-8">
+        <a-tooltip title="Voir les statistiques">
+          <a-button 
+            type="primary" 
+            shape="circle" 
+            size="large" 
+            class="!h-14 !w-14 !shadow-lg !flex !items-center !justify-center"
+            @click="router.push({ name: 'ProjectStats', params: { id: project.id } })"
+          >
+            <template #icon>
+              <BarChartOutlined style="font-size: 24px" />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -38,8 +55,10 @@ import { useProjectsStore } from '@/stores/projects'
 import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/components/AppLayout.vue'
 import RoleSwitch from '@/components/common/RoleSwitch.vue'
-import DeveloperProjectView from '@/views/projects/DeveloperProjectView.vue'
-import ManagerProjectView from '@/views/projects/ManagerProjectView.vue'
+import DeveloperProjectView from '@/components/projects/DeveloperProjectView.vue'
+import ManagerProjectView from '@/components/projects/ManagerProjectView.vue'
+import { BarChartOutlined } from '@ant-design/icons-vue'
+
 
 const props = defineProps({
   id: { type: [String, Number], required: true }
