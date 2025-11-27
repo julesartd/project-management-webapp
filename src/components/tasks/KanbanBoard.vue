@@ -59,6 +59,7 @@
 import { ref, watch } from "vue";
 import draggable from "vuedraggable";
 import { CommentOutlined } from '@ant-design/icons-vue'
+import { TASK_STATUS } from "@/stores/tasks";
 
 
 const props = defineProps({
@@ -69,12 +70,12 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["update-status", "open-task"]);
+const emit = defineEmits(["update-status", "open-task", "comment"]);
 
 const columns = ref([
-  { status: "not_validated", label: "Non validée", tasks: [] },
-  { status: "validated", label: "Validée", tasks: [] },
-  { status: "completed", label: "Terminée", tasks: [] }
+  { status: TASK_STATUS.NOT_VALIDATED, label: "Non validée", tasks: [] },
+  { status: TASK_STATUS.VALIDATED, label: "Validée", tasks: [] },
+  { status: TASK_STATUS.COMPLETED, label: "Terminée", tasks: [] }
 ]);
 
 const updateColumns = () => {
