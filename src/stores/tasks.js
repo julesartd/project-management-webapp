@@ -1,4 +1,3 @@
-// File: src/stores/tasks.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 

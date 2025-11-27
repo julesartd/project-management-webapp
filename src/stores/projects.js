@@ -1,81 +1,36 @@
-// File: `src/stores/projects.js`
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { useAuthStore } from './auth.js'
-import { useTasksStore } from './tasks.js'
+import {defineStore} from 'pinia'
+import {ref, computed} from 'vue'
+import {useAuthStore} from './auth.js'
+import {useTasksStore} from './tasks.js'
+import {generateId} from "@/utils/utils.js";
 
 export const useProjectsStore = defineStore('projects', () => {
     const authStore = useAuthStore()
-    const tasksStore = useTasksStore()
+    const tasksStore = useTasksStore();
 
     const raw = JSON.parse(localStorage.getItem('projects')) || []
     const projects = ref(raw)
 
-    // helper id generator
-    function generateId() {
-        return (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function')
-            ? crypto.randomUUID()
-            : Date.now().toString()
-    }
-
-    // seed default projects if none exist
-    function seedDefaultProjects() {
-        if (projects.value.length > 0) return
-
-        const currentUserId = authStore.currentUser?.id || null
-        const sampleProjects = [
-            {
-                id: generateId(),
-                name: 'Website Redesign',
-                description: 'Refactor frontend, update styles and improve accessibility.',
-                deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14).toISOString(), // +14 days
-                managers: currentUserId ? [currentUserId] : [],
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: generateId(),
-                name: 'Mobile App MVP',
-                description: 'Build core features for the mobile MVP.',
-                deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(), // +30 days
-                managers: currentUserId ? [currentUserId] : [],
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: generateId(),
-                name: 'Internal Tools Cleanup',
-                description: 'Improve CI, linting and developer experience.',
-                deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // +7 days
-                managers: currentUserId ? [currentUserId] : [],
-                createdAt: new Date().toISOString()
-            }
-        ]
-
-        projects.value.push(...sampleProjects)
-        saveToStorage()
-    }
 
     const userProjects = computed(() => {
         if (!authStore.currentUser) return []
         if (authStore.hasRole('manager')) return projects.value
         if (authStore.hasRole('developer')) {
-            // Developer can only see projects where they have at least one assigned task
             return projects.value.filter(project =>
                 tasksStore.hasTaskInProject(authStore.currentUser.id, project.id)
             )
         }
         return []
-    })
+    });
 
     const managedProjects = computed(() => {
         if (!authStore.currentUser) return []
         return projects.value.filter(p => p.managers?.includes(authStore.currentUser.id))
-    })
+    });
 
     function createProject(projectData) {
-        const id = generateId()
-
         const newProject = {
-            id,
+            id: generateId(),
             name: projectData.name,
             description: projectData.description,
             deadline: projectData.deadline,
@@ -156,8 +111,6 @@ export const useProjectsStore = defineStore('projects', () => {
         if (isProjectAtRisk(projectId)) return 'active'
         return 'normal'
     }
-
-    seedDefaultProjects()
 
     return {
         projects,
