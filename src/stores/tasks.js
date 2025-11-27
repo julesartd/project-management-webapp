@@ -104,7 +104,11 @@ export const useTasksStore = defineStore('tasks', () => {
     function toggleComplete(taskId) {
         const task = tasks.value.find(t => String(t.id) === String(taskId))
         if (!task) throw new Error('Task not found')
-        task.status = task.status === TASK_STATUS.COMPLETED ? TASK_STATUS.NOT_VALIDATED : TASK_STATUS.COMPLETED
+        if (task.status === TASK_STATUS.COMPLETED) {
+            task.status = TASK_STATUS.VALIDATED
+        } else {
+            task.status = TASK_STATUS.COMPLETED
+        }
         task.updatedAt = new Date().toISOString()
         saveToStorage()
         return task

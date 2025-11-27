@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 import {ref, computed} from 'vue'
 import {useAuthStore} from './auth.js'
-import {useTasksStore} from './tasks.js'
+import {useTasksStore, TASK_STATUS} from './tasks.js'
 import {generateId} from "@/utils/utils.js";
 
 export const useProjectsStore = defineStore('projects', () => {
@@ -84,7 +84,9 @@ export const useProjectsStore = defineStore('projects', () => {
     function getProjectProgress(projectId) {
         const projectTasks = tasksStore.getTasksByProject(projectId)
         if (projectTasks.length === 0) return 0
-        const completed = projectTasks.filter(t => t.status === 'completed').length
+        const completed = projectTasks.filter(t =>
+            t.status === TASK_STATUS.COMPLETED
+        ).length
         return Math.round((completed / projectTasks.length) * 100)
     }
 

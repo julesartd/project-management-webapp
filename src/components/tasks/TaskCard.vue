@@ -49,9 +49,8 @@ const authStore = useAuthStore()
 const statusColor = computed(() => {
   const colors = {
     [TASK_STATUS.NOT_VALIDATED]: 'orange',
-    [TASK_STATUS.VALIDATED]: 'blue',
-    'en_cours': 'cyan',
-    [TASK_STATUS.COMPLETED]: 'green'
+    [TASK_STATUS.VALIDATED]: 'green',
+    [TASK_STATUS.COMPLETED]: 'blue'
   }
   return colors[props.task.status] || 'default'
 })
@@ -60,7 +59,6 @@ const statusLabel = computed(() => {
   const labels = {
     [TASK_STATUS.NOT_VALIDATED]: 'Non validé',
     [TASK_STATUS.VALIDATED]: 'Validé',
-    'en_cours': 'En cours',
     [TASK_STATUS.COMPLETED]: 'Terminé'
   }
   return labels[props.task.status] || props.task.status
@@ -78,7 +76,8 @@ const formattedDeadline = computed(() => {
 })
 
 const isOverdue = computed(() => {
-  if (!props.task.deadline || props.task.status === TASK_STATUS.COMPLETED) return false
+  if (!props.task.deadline) return false
+  if (props.task.status === TASK_STATUS.COMPLETED) return false
   return new Date(props.task.deadline) < new Date()
 })
 
