@@ -110,6 +110,7 @@
       <a-tab-pane key="kanban" tab="Kanban">
         <KanbanBoard
           :tasks="projectTasks"
+          :users="allUsers"
           @update-status="handleStatusChange"
           @open-task="handleOpenTask"
           @comment="handleComment"

@@ -22,6 +22,20 @@
             <p class="task-deadline" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
             </p>
+
+            <div v-if="element.assignedTo?.length" class="task-avatars">
+              <a-avatar-group :max-count="3" size="small">
+                <a-avatar
+                  v-for="userId in element.assignedTo"
+                  :key="userId"
+                  :src="getUserAvatar(userId)"
+                  :alt="getUserName(userId)"
+                >
+                  {{ getUserInitials(userId) }}
+                </a-avatar>
+              </a-avatar-group>
+            </div>
+
             
             <div v-if="element.comments?.length" class="task-comments">
               <a-button
@@ -48,7 +62,11 @@ import { CommentOutlined } from '@ant-design/icons-vue'
 
 
 const props = defineProps({
-  tasks: { type: Array, required: true }
+  tasks: { type: Array, required: true },
+  users: {
+    type: Array,
+    default: () => []
+  }
 });
 
 const emit = defineEmits(["update-status", "open-task"]);
@@ -90,9 +108,33 @@ function openTask(task) {
 function handleComment(task) {
   emit("comment", task);
 }
+
+// A voir si on refacto car on utilise les mêmes fonctions dans TaskCard.vue
+function getUserName(userId) {
+  const user = props.users.find(u => u.id === userId)
+  return user?.name || 'Unknown'
+}
+
+function getUserAvatar(userId) {
+  const user = props.users.find(u => u.id === userId)
+  return user?.avatar || null
+}
+
+function getUserInitials(userId) {
+  const name = getUserName(userId)
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+}
+
 </script>
 
 <style scoped>
+
+.task-avatars {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px; 
+}
 
 .comments-button {
   display: inline-flex;
