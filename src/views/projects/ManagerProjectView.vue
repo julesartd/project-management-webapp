@@ -106,13 +106,13 @@
     </a-alert>
 
     <a-tabs v-model:activeKey="activeTab" class="tasks-tabs">
-      
-      <!-- Kanban -->
+
       <a-tab-pane key="kanban" tab="Kanban">
         <KanbanBoard
           :tasks="projectTasks"
           @update-status="handleStatusChange"
           @open-task="handleOpenTask"
+          @comment="handleComment"
         />
       </a-tab-pane>
 
@@ -485,7 +485,6 @@ function handleStatusChange(taskId, newStatus) {
 function handleOpenTask(task) {
   handleEditTask(task);
 }
-
 
 </script>
 

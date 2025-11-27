@@ -24,7 +24,15 @@
             </p>
             
             <div v-if="element.comments?.length" class="task-comments">
-              💬 {{ element.comments.length }}
+              <a-button
+                type="text"
+                size="small"
+                @click.stop="handleComment(element)"
+                class="comments-button"
+              >
+                <CommentOutlined />
+                <span>{{ element.comments.length }}</span>
+              </a-button>
             </div>
           </div>
         </template>
@@ -36,6 +44,8 @@
 <script setup>
 import { ref, watch } from "vue";
 import draggable from "vuedraggable";
+import { CommentOutlined } from '@ant-design/icons-vue'
+
 
 const props = defineProps({
   tasks: { type: Array, required: true }
@@ -76,9 +86,22 @@ function formatDate(dateStr) {
 function openTask(task) { 
   emit("open-task", task);
 }
+
+function handleComment(task) {
+  emit("comment", task);
+}
 </script>
 
 <style scoped>
+
+.comments-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  height: auto;
+}
+
 .kanban-board {
   display: flex;
   gap: 16px;
