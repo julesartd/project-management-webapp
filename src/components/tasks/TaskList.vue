@@ -166,5 +166,6 @@ const sortedTasks = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 4px 0;
 }
 </style>
