@@ -203,9 +203,26 @@ function handleAddComment(commentData) {
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
 }
 
 :deep(.ant-tabs) {
-  margin-top: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+:deep(.ant-tabs-nav) {
+  padding: 16px 24px 0;
+  margin-bottom: 0;
+}
+
+:deep(.ant-tabs-tab) {
+  padding: 12px 16px;
+  font-weight: 500;
+}
+
+:deep(.ant-tabs-content) {
+  padding: 16px 24px 24px;
 }
 </style>

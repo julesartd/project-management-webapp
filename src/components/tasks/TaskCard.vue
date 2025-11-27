@@ -151,7 +151,7 @@ function getUserInitials(userId) {
         class="task-description"
     />
 
-    <a-space direction="vertical" style="width: 100%; margin-top: 12px" :size="8">
+    <a-space direction="vertical" style="width: 100%; margin-top: 8px" :size="4">
       <div v-if="task.deadline" class="task-info">
         <CalendarOutlined />
         <span :class="{ 'text-danger': isOverdue }">
@@ -174,7 +174,11 @@ function getUserInitials(userId) {
         </a-avatar-group>
       </div>
 
-      <div v-if="task.comments && task.comments.length > 0" class="task-info">
+      <div
+        v-if="task.comments && task.comments.length > 0"
+        class="task-info task-info-clickable"
+        @click="$emit('comment')"
+      >
         <CommentOutlined />
         <span>{{ task.comments.length }} commentaire(s)</span>
       </div>
@@ -204,12 +208,25 @@ function getUserInitials(userId) {
 
 <style scoped>
 .task-card {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   transition: all 0.3s ease;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+.task-card :deep(.ant-card-head) {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  background: #fafafa;
+}
+
+.task-card :deep(.ant-card-body) {
+  padding: 16px;
 }
 
 .task-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d9d9d9;
 }
 
 .task-completed {
@@ -235,16 +252,32 @@ function getUserInitials(userId) {
 }
 
 .task-description {
-  margin: 0;
+  margin: 0 0 12px 0;
   color: rgba(0, 0, 0, 0.65);
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .task-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 6px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.65);
+  padding: 4px 0;
+}
+
+.task-info-clickable {
+  cursor: pointer;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.task-info-clickable:hover {
+  background-color: #f0f5ff;
+  color: #1890ff;
 }
 
 .text-danger {
@@ -255,17 +288,18 @@ function getUserInitials(userId) {
 .task-actions-center {
   display: flex;
   justify-content: center;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid #f0f0f0;
 }
 
 .complete-button,
 .uncomplete-button {
-  min-width: 130px;
+  min-width: 120px;
   font-weight: 600;
-  padding: 8px 20px;
+  padding: 6px 16px;
   height: auto;
+  font-size: 13px;
   border-radius: 6px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;

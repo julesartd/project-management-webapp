@@ -466,6 +466,13 @@ function handleAssignSubmit(selectedUserIds) {
   width: 100%;
 }
 
+.manager-project-view :deep(.ant-tag) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+}
+
 :deep(.ant-page-header) {
   padding: 16px 24px;
   background: white;
