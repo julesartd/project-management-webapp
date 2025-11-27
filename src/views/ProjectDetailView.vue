@@ -49,21 +49,21 @@ const router = useRouter()
 const projectsStore = useProjectsStore()
 const authStore = useAuthStore()
 
-// Get project
+
 const project = computed(() =>
     (projectsStore.userProjects || []).find(p => String(p.id) === String(props.id)) || null
 )
 
-// Get all users for display
+
 const allUsers = computed(() => authStore.users || [])
 
-// Check if user has both roles
+
 const hasBothRoles = computed(() => {
   const user = authStore.currentUser
   return user?.roles?.includes('developer') && user?.roles?.includes('manager')
 })
 
-// Determine initial role
+
 const initialRole = computed(() => {
   const user = authStore.currentUser
   if (!user) return 'developer'
@@ -73,14 +73,12 @@ const initialRole = computed(() => {
     return 'developer'
   }
 
-  // If user has only one role, use that
   if (user.roles?.includes('manager')) return 'manager'
   return 'developer'
 })
 
 const currentRole = ref(initialRole.value)
 
-// Show appropriate view based on current role
 const showDeveloperView = computed(() => {
   return currentRole.value === 'developer' && authStore.hasRole('developer')
 })

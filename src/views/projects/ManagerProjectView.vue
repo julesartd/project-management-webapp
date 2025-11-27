@@ -447,18 +447,14 @@ function handleAssignSubmit(selectedUserIds) {
   try {
     const currentAssignedIds = taskToAssign.value?.assignedTo || []
 
-    // Find users to add
     const toAdd = selectedUserIds.filter(id => !currentAssignedIds.includes(id))
 
-    // Find users to remove
     const toRemove = currentAssignedIds.filter(id => !selectedUserIds.includes(id))
 
-    // Add users
     toAdd.forEach(userId => {
       tasksStore.assignUser(taskToAssignId.value, userId)
     })
 
-    // Remove users
     toRemove.forEach(userId => {
       tasksStore.unassignUser(taskToAssignId.value, userId)
     })
