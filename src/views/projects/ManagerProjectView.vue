@@ -488,6 +488,10 @@ function handleStatusChange(taskId, newStatus) {
   }
 }
 
+function handleOpenTask(task) {
+  handleEditTask(task);
+}
+
 
 </script>
 

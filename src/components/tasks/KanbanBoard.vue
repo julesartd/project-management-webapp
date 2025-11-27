@@ -4,7 +4,7 @@
       <h3>{{ column.label }} ({{ column.tasks.length }})</h3>
 
       <draggable
-        v-model="column.tasks"
+        :list="column.tasks"
         group="tasks"
         item-key="id"
         class="kanban-drop-area"
@@ -49,20 +49,27 @@ const updateColumns = () => {
   });
 };
 
+// watch(
+//   () => props.tasks,
+//   () => updateColumns(),
+//   { immediate: true, deep: true }
+// );
+
 watch(
   () => props.tasks,
-  () => updateColumns(),
+  updateColumns,
   { immediate: true, deep: true }
 );
 
-
 function onDragEnd(event) {
-  const task = event.item.__draggable_context.element;
-  const newStatus = event.to.closest(".kanban-column")?.dataset.status;
+  const movedTask = event.item.__draggable_context.element; // l'élément "task" réel
+  const newStatus = event.to.closest(".kanban-column").dataset.status;
 
-  if (!newStatus || task.status === newStatus) return;
-
-  emit("update-status", task.id, newStatus);
+  if (movedTask.status !== newStatus) {
+    movedTask.status = newStatus;
+    emit("update-status", movedTask.id, newStatus);
+    updateColumns(); // pour refléter les changements dans le Kanban
+  }
 }
 
 function allowDrop() {
