@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen p-3 md:p-6">
     <a-card class="w-full min-h-[80vh] mx-auto rounded-2xl md:rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-indigo-500/10 overflow-hidden" :bordered="false">
-      <div class="relative mb-0 after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#667eea] after:to-[#764ba2] after:rounded-sm">
+      <div class="relative mb-0 after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-16 after:h-1 after:bg-linear-to-r after:from-[#667eea] after:to-[#764ba2] after:rounded-sm">
         <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-6">
           <div class="flex-1">
-            <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
+            <h1 class="text-xl md:text-2xl font-black bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
             <p class="text-sm md:text-base text-gray-500 font-medium m-0">{{ projectsSubtitle }}</p>
           </div>
           <ActionButton
@@ -117,21 +117,26 @@ function handleDelete(project) {
 }
 
 function handleView(project) {
-  const id = project?.id
+  try {
+    const id = project?.id
 
-  if (!id) {
-    message.error('Impossible d\'ouvrir les détails : ID manquant')
-    console.warn('Missing project id for', project)
-    return
+    if (!id) {
+      message.error('Impossible d\'ouvrir les détails : ID manquant')
+      console.warn('Missing project id for', project)
+      return
+    }
+
+    router.push({name: 'ProjectDetails', params: {id}})
+  } catch (error) {
+    console.error('Erreur lors de la navigation:', error)
+    message.error('Erreur lors de l\'ouverture du projet')
   }
-
-  router.push({name: 'ProjectDetails', params: {id}})
 }
 
 async function handleSubmit(formData) {
   try {
     if (modalMode.value === 'create') {
-      createProject(formData)
+      await createProject(formData)
       message.success('Projet créé avec succès')
     } else {
       await updateProject(selectedProject.value.id, formData)
@@ -139,6 +144,7 @@ async function handleSubmit(formData) {
     }
     modalVisible.value = false
   } catch (error) {
+    console.error('Erreur lors de l\'opération:', error)
     message.error(error.message || 'Erreur lors de l\'opération')
   }
 }
@@ -149,6 +155,7 @@ async function confirmDelete() {
     message.success('Projet supprimé avec succès')
     deleteModalVisible.value = false
   } catch (error) {
+    console.error('Erreur lors de la suppression:', error)
     message.error(error.message || 'Erreur lors de la suppression')
   }
 }

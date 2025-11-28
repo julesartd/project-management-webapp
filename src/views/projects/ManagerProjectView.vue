@@ -1,39 +1,47 @@
 <template>
   <div class="w-full">
-    <a-page-header
-      class="bg-white rounded-xl shadow-sm mb-4 p-6 border border-gray-100"
-      @back="$emit('back')"
-      :title="project.name"
-      :sub-title="project.description"
-    >
-      <template #extra>
-        <div class="flex flex-col items-end gap-3 w-full md:w-auto md:items-center md:flex-row">
-          <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
-            <CheckCircleOutlined /> Vous gérez ce projet
-          </a-tag>
-          <a-tag v-else color="orange" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
-            <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
-          </a-tag>
+    <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
+      <div class="back-button-wrapper">
+        <a-button type="text" @click="$emit('back')" class="back-button">
+          <ArrowLeftOutlined class="back-icon" />
+          <span class="back-text">Retour</span>
+        </a-button>
+      </div>
+      <div class="mb-4">
+        <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
+        <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
+      </div>
 
-          <ActionButton
-            v-if="!isProjectManager"
-            variant="secondary"
-            :icon="UserAddOutlined"
-            @click="handleBecomeManager"
-          >
-            Se déclarer gérant
-          </ActionButton>
-          <ActionButton
-            v-if="isProjectManager"
-            variant="purple"
-            :icon="PlusOutlined"
-            @click="showCreateTaskForm"
-          >
-            Nouvelle tâche
-          </ActionButton>
-        </div>
-      </template>
-    </a-page-header>
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+        <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+          <CheckCircleOutlined class="flex items-center justify-center" style="font-size: 16px;" />
+          <span>Vous gérez ce projet</span>
+        </a-tag>
+        <a-tag v-else color="orange" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+          <ExclamationCircleOutlined class="flex items-center justify-center" style="font-size: 16px;" />
+          <span>Vous ne gérez pas ce projet</span>
+        </a-tag>
+
+        <ActionButton
+          v-if="!isProjectManager"
+          variant="secondary"
+          :icon="UserAddOutlined"
+          @click="handleBecomeManager"
+          class="w-full md:w-auto"
+        >
+          Se déclarer gérant
+        </ActionButton>
+        <ActionButton
+          v-if="isProjectManager"
+          variant="purple"
+          :icon="PlusOutlined"
+          @click="showCreateTaskForm"
+          class="w-full md:w-auto"
+        >
+          Nouvelle tâche
+        </ActionButton>
+      </div>
+    </div>
 
     <div class="p-6 bg-white rounded-xl shadow-sm mb-4 border border-gray-100">
       <a-row :gutter="[16, 16]">
@@ -93,6 +101,7 @@
       type="warning"
       show-icon
       class="my-4 rounded-lg border-orange-200 bg-orange-50"
+      style="margin-bottom: 15px;"
     >
       <template #message>
         <span class="font-medium">{{ nonValidatedTasks.length }} tâche(s) en attente de validation</span>
@@ -177,8 +186,6 @@
           />
         </div>
       </a-tab-pane>
-
-      
     </a-tabs>
 
     <TaskForm
@@ -233,7 +240,8 @@ import {
   FallOutlined,
   FileTextOutlined,
   ClockCircleOutlined,
-  WarningOutlined
+  WarningOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
@@ -262,7 +270,6 @@ const authStore = useAuthStore()
 const tasksStore = useTasksStore()
 const projectsStore = useProjectsStore()
 
-// Detect mobile and set default tab accordingly
 const isMobile = ref(window.innerWidth <= 768)
 const activeTab = ref(isMobile.value ? 'all' : 'kanban')
 const taskFormVisible = ref(false)
@@ -503,9 +510,8 @@ function handleOpenTask(task) {
 </script>
 
 <style scoped>
-@reference "../../index.css";
+@import "../../index.css";
 
-/* Hide Kanban tab on mobile */
 @media (max-width: 768px) {
   :deep(.ant-tabs-tab:first-child) {
     display: none !important;
@@ -543,5 +549,61 @@ function handleOpenTask(task) {
 :deep(.ant-tabs-ink-bar) {
   @apply bg-indigo-600;
 }
+
+/* Center badge icons */
+:deep(.ant-tag) {
+  @apply flex items-center;
+}
+
+:deep(.ant-tag .anticon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+:deep(.ant-statistic-content) {
+  display: flex;
+  align-items: baseline;
+}
+
+:deep(.ant-statistic-content-prefix) {
+  display: inline-flex;
+  align-items: baseline;
+  margin-right: 8px;
+  line-height: 1;
+}
+
+:deep(.ant-statistic-content-prefix .anticon) {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+:deep(.ant-statistic-content-value) {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5px;
+  padding: 4px;
+  font-size: 1rem; 
+}
+
+.back-icon {
+  font-size: 1em;
+  line-height: 1;  
+  vertical-align: middle;
+}
+
+.back-text {
+  line-height: 1; 
+}
+
 </style>
 

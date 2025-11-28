@@ -1,7 +1,6 @@
 <template>
   <a-card hoverable class="group relative rounded-2xl overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl border-none shadow-sm" @click="$emit('view')">
-    <!-- Top Gradient Border -->
-    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#667eea] to-[#764ba2] transition-all duration-300 group-hover:h-1.5"></div>
+    <div class="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[#667eea] to-[#764ba2] transition-all duration-300 group-hover:h-1.5"></div>
 
     <template #title>
       <a-typography-text strong class="text-lg font-semibold text-gray-900">{{ project.name }}</a-typography-text>
@@ -25,7 +24,7 @@
       </a-dropdown>
     </template>
 
-    <div class="mb-4 text-gray-500 text-sm leading-relaxed min-h-[44px] line-clamp-2">
+    <div class="mb-4 text-gray-500 text-sm leading-relaxed min-h-11 line-clamp-2">
       {{ project.description }}
     </div>
 

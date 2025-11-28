@@ -1,23 +1,31 @@
 <template>
   <div class="w-full">
-    <a-page-header
-      class="bg-white rounded-xl shadow-sm mb-4 p-6 border border-gray-100"
-      @back="$emit('back')"
-      :title="project.name"
-      :sub-title="project.description"
-    >
-      <template #extra>
+    <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
+      <div class="flex items-center mb-4">
+        <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
+          <ArrowLeftOutlined />
+          <span class="hidden sm:inline">Retour</span>
+        </a-button>
+      </div>
+
+      <div class="mb-4">
+        <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
+        <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
+      </div>
+
+      <div class="flex justify-end">
         <ActionButton
           variant="primary"
           :icon="PlusOutlined"
           @click="showTaskForm"
+          class="w-full md:w-auto"
         >
           Créer une tâche
         </ActionButton>
-      </template>
+      </div>
+    </div>
 
-      <template #footer>
-        <a-tabs class="bg-white rounded-xl shadow-sm border border-gray-100">
+    <a-tabs class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <a-tab-pane key="assigned" tab="Mes tâches">
             <div class="p-6">
               <TaskList
@@ -50,8 +58,6 @@
             </div>
           </a-tab-pane>
         </a-tabs>
-      </template>
-    </a-page-header>
 
     <TaskForm
       v-model:open="taskFormVisible"
@@ -80,7 +86,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
 import ActionButton from '@/components/common/ActionButton.vue'
@@ -199,9 +205,8 @@ function handleAddComment(commentData) {
 </script>
 
 <style scoped>
-@reference "../../index.css";
+@import "../../index.css";
 
-/* Removed custom CSS in favor of Tailwind classes in template */
 :deep(.ant-page-header-heading-title) {
   @apply text-xl font-bold text-gray-900;
 }

@@ -1,3 +1,67 @@
+<template>
+  <a-modal
+      :open="open"
+      :title="mode === 'create' ? 'Nouveau Projet' : 'Modifier le Projet'"
+      :ok-text="mode === 'create' ? 'Créer' : 'Modifier'"
+      cancel-text="Annuler"
+      @ok="handleOk"
+      @cancel="handleCancel"
+  >
+    <a-form
+        ref="formRef"
+        :model="formData"
+        :rules="rules"
+        layout="vertical"
+    >
+      <a-form-item label="Nom du projet" name="name">
+        <a-input v-model:value="formData.name" placeholder="Nom du projet" />
+      </a-form-item>
+
+      <a-form-item label="Managers" name="managers">
+        <a-select
+            v-model:value="formData.managers"
+            mode="multiple"
+            placeholder="Sélectionnez les managers"
+            style="width: 100%"
+        >
+          <a-select-option
+              v-for="u in users"
+              :key="u.id"
+              :value="u.id"
+          >
+            {{ u.name || u.email || u.id }}
+          </a-select-option>
+
+          <a-select-option
+              v-if="!users.length && currentUser"
+              :key="currentUser.id"
+              :value="currentUser.id"
+          >
+            {{ currentUser.name || currentUser.email || currentUser.id }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Description" name="description">
+        <a-textarea
+            v-model:value="formData.description"
+            placeholder="Description du projet"
+            :rows="4"
+        />
+      </a-form-item>
+
+      <a-form-item label="Date limite" name="deadline">
+        <a-date-picker
+            v-model:value="formData.deadline"
+            style="width: 100%"
+            format="DD/MM/YYYY"
+            :disabled-date="disabledDate"
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+</template>
+
 <script setup>
 import { ref, watch } from 'vue'
 import dayjs from 'dayjs'
@@ -103,67 +167,3 @@ function resetForm() {
   formRef.value?.resetFields()
 }
 </script>
-
-<template>
-  <a-modal
-      :open="open"
-      :title="mode === 'create' ? 'Nouveau Projet' : 'Modifier le Projet'"
-      :ok-text="mode === 'create' ? 'Créer' : 'Modifier'"
-      cancel-text="Annuler"
-      @ok="handleOk"
-      @cancel="handleCancel"
-  >
-    <a-form
-        ref="formRef"
-        :model="formData"
-        :rules="rules"
-        layout="vertical"
-    >
-      <a-form-item label="Nom du projet" name="name">
-        <a-input v-model:value="formData.name" placeholder="Nom du projet" />
-      </a-form-item>
-
-      <a-form-item label="Managers" name="managers">
-        <a-select
-            v-model:value="formData.managers"
-            mode="multiple"
-            placeholder="Sélectionnez les managers"
-            style="width: 100%"
-        >
-          <a-select-option
-              v-for="u in users"
-              :key="u.id"
-              :value="u.id"
-          >
-            {{ u.name || u.email || u.id }}
-          </a-select-option>
-
-          <a-select-option
-              v-if="!users.length && currentUser"
-              :key="currentUser.id"
-              :value="currentUser.id"
-          >
-            {{ currentUser.name || currentUser.email || currentUser.id }}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-
-      <a-form-item label="Description" name="description">
-        <a-textarea
-            v-model:value="formData.description"
-            placeholder="Description du projet"
-            :rows="4"
-        />
-      </a-form-item>
-
-      <a-form-item label="Date limite" name="deadline">
-        <a-date-picker
-            v-model:value="formData.deadline"
-            style="width: 100%"
-            format="DD/MM/YYYY"
-            :disabled-date="disabledDate"
-        />
-      </a-form-item>
-    </a-form>
-  </a-modal>
-</template>

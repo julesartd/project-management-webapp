@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-4 p-4 w-full overflow-x-auto">
     <div
-      class="p-2 flex-1 flex flex-col gap-2 rounded-md min-w-[280px] flex-shrink-0 min-h-[300px]"
+      class="p-2 flex-1 flex flex-col gap-2 rounded-md min-w-[280px] shrink-0 min-h-[300px]"
       :class="{
         'bg-red-50': column.status === TASK_STATUS.NOT_VALIDATED,
         'bg-blue-50': column.status === TASK_STATUS.VALIDATED,
@@ -25,8 +25,7 @@
         <template #item="{ element }">
           <div class="bg-white rounded p-3 cursor-grab shadow-sm transition-all duration-200 hover:bg-indigo-50 hover:shadow-md border border-transparent hover:border-indigo-100" 
             @dblclick="openTask(element)"
-            :title="'Double-cliquez pour ouvrir la tâche'"
-          >
+            :title="'Double-cliquez pour ouvrir la tâche'">
             <p class="font-semibold m-0 text-gray-800">{{ element.title }}</p>
             <p class="text-xs text-gray-500 mt-1 mb-0" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
@@ -46,15 +45,17 @@
             </div>
 
             
-            <div v-if="element.comments?.length" class="text-xs text-gray-400 mt-2 flex justify-end">
+            <div v-if="element.comments?.length" class="text-xs text-gray-400  flex justify-end">
               <a-button
                 type="text"
                 size="small"
                 @click.stop="handleComment(element)"
-                class="inline-flex items-center gap-1 px-1 h-auto text-gray-400 hover:text-indigo-600"
+                class="px-1 h-auto text-gray-400 hover:text-indigo-600"
               >
-                <CommentOutlined />
-                <span>{{ element.comments.length }}</span>
+                <div class="flex items-center gap-1 leading-none">
+                  <CommentOutlined class="text-base" />
+                  <span>{{ element.comments.length }}</span>
+                </div>
               </a-button>
             </div>
           </div>
@@ -65,11 +66,12 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { computed, toRef } from "vue";
 import draggable from "vuedraggable";
 import { CommentOutlined } from '@ant-design/icons-vue'
 import { TASK_STATUS } from "@/stores/tasks";
 import { message } from "ant-design-vue";
+import { useUserDisplay } from '@/composables/useUserDisplay';
 
 
 const props = defineProps({
@@ -83,25 +85,26 @@ const props = defineProps({
 
 const emit = defineEmits(["update-status", "open-task", "comment"]);
 
-const columns = ref([
-  { status: TASK_STATUS.NOT_VALIDATED, label: "Non validée", tasks: [] },
-  { status: TASK_STATUS.VALIDATED, label: "Validée", tasks: [] },
-  { status: TASK_STATUS.COMPLETED, label: "Terminée", tasks: [] }
-]);
+const { getUserName, getUserAvatar, getUserInitials } = useUserDisplay(toRef(props, 'users'));
 
-const updateColumns = () => {
-  columns.value.forEach(col => {
-    col.tasks = props.tasks.filter(t => t.status === col.status);
-  });
-};
+const COLUMN_DEFINITIONS = [
+  { status: TASK_STATUS.NOT_VALIDATED, label: "Non validée" },
+  { status: TASK_STATUS.VALIDATED, label: "Validée" },
+  { status: TASK_STATUS.COMPLETED, label: "Terminée" }
+];
+
+const columns = computed(() => {
+  return COLUMN_DEFINITIONS.map(def => ({
+    status: def.status,
+    label: def.label,
+    tasks: props.tasks.filter(t => t.status === def.status)
+  }));
+});
 
 const canDrag = computed(() => props.isProjectManager);
 
-watch(() => props.tasks, updateColumns, { immediate: true, deep: true });
-
 function onDragEnd(event) {
   const task = event.item.__draggable_context.element;
-  // Use closest to find the parent column div
   const newStatus = event.to.closest("[data-status]")?.dataset.status;
   if (!newStatus || task.status === newStatus) return;
 
@@ -130,25 +133,7 @@ function openTask(task) {
 function handleComment(task) {
   emit("comment", task);
 }
-
-// A voir si on refacto car on utilise les mêmes fonctions dans TaskCard.vue
-function getUserName(userId) {
-  const user = props.users.find(u => u.id === userId)
-  return user?.name || 'Unknown'
-}
-
-function getUserAvatar(userId) {
-  const user = props.users.find(u => u.id === userId)
-  return user?.avatar || null
-}
-
-function getUserInitials(userId) {
-  const name = getUserName(userId)
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-}
-
 </script>
 
 <style scoped>
-/* No custom CSS needed, all Tailwind utility classes */
 </style>

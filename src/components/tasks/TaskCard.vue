@@ -79,7 +79,7 @@
             v-if="!isCompleted"
             type="primary"
             size="small"
-            class="min-w-[120px] font-semibold px-4 h-auto text-xs rounded-md shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-br from-indigo-500 to-indigo-600 border-none"
+            class="min-w-[120px] font-semibold px-4 h-auto text-xs rounded-md shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 bg-linear-to-br from-indigo-500 to-indigo-600 border-none"
             @click="$emit('toggle-complete')"
         >
           <span class="flex items-center justify-center gap-1.5 w-full">
@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import {
   MoreOutlined,
   EditOutlined,
@@ -116,6 +116,7 @@ import {
   UserAddOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { useUserDisplay } from '@/composables/useUserDisplay'
 import { TASK_STATUS } from '@/stores/tasks.js'
 
 const props = defineProps({
@@ -148,6 +149,7 @@ const props = defineProps({
 defineEmits(['edit', 'delete', 'comment', 'toggle-complete', 'validate', 'assign'])
 
 const authStore = useAuthStore()
+const { getUserName, getUserAvatar, getUserInitials } = useUserDisplay(toRef(props, 'users'))
 
 const statusColor = computed(() => {
   const colors = {
@@ -192,25 +194,10 @@ const isAssignedToCurrentUser = computed(() => {
   if (!authStore.currentUser) return false
   return props.task.assignedTo?.includes(authStore.currentUser.id)
 })
-
-function getUserName(userId) {
-  const user = props.users.find(u => u.id === userId)
-  return user?.name || 'Unknown'
-}
-
-function getUserAvatar(userId) {
-  const user = props.users.find(u => u.id === userId)
-  return user?.avatar || null
-}
-
-function getUserInitials(userId) {
-  const name = getUserName(userId)
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-}
 </script>
 
 <style scoped>
-@reference "../../index.css";
+@import "../../index.css";
 
 :deep(.ant-card-head) {
   @apply px-4 py-3 border-b border-gray-100 bg-gray-50;
@@ -218,5 +205,19 @@ function getUserInitials(userId) {
 
 :deep(.ant-card-body) {
   @apply p-4;
+}
+
+:deep(.ant-btn .anticon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+:deep(.ant-btn span) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

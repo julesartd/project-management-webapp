@@ -73,6 +73,7 @@ import { ref, computed } from 'vue'
 import { Empty } from 'ant-design-vue'
 import { SendOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { useUserDisplay } from '@/composables/useUserDisplay'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/fr'
@@ -90,6 +91,7 @@ const props = defineProps({
 const emit = defineEmits(['add-comment'])
 
 const authStore = useAuthStore()
+const { getUserName: getAuthorName, getUserAvatar: getAuthorAvatar, getInitialsFromName } = useUserDisplay()
 const newComment = ref('')
 const loading = ref(false)
 
@@ -97,12 +99,7 @@ const currentUser = computed(() => authStore.currentUser)
 
 const currentUserInitials = computed(() => {
   if (!currentUser.value?.name) return '?'
-  return currentUser.value.name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
+  return getInitialsFromName(currentUser.value.name)
 })
 
 const sortedComments = computed(() => {
@@ -112,25 +109,10 @@ const sortedComments = computed(() => {
   )
 })
 
-function getAuthorName(authorId) {
-  const user = authStore.users?.find(u => u.id === authorId)
-  return user?.name || 'Utilisateur inconnu'
-}
-
-function getAuthorAvatar(authorId) {
-  const user = authStore.users?.find(u => u.id === authorId)
-  return user?.avatar || null
-}
-
 function getAuthorInitials(authorId) {
   const name = getAuthorName(authorId)
   if (!name || name === 'Utilisateur inconnu') return '?'
-  return name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
+  return getInitialsFromName(name)
 }
 
 function formatDate(date) {

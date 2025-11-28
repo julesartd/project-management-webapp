@@ -342,7 +342,7 @@ const burnupOptions = computed(() => {
         formatter: (val) => val.toFixed(0)
       }
     },
-    colors: ['#faad14', '#1890ff', '#52c41a'], // Orange (Created), Blue (Validated), Green (Completed)
+    colors: ['#faad14', '#1890ff', '#52c41a'], 
     legend: { position: 'top' },
     annotations: annotations,
     grid: {

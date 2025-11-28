@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="p-6">
+    <div style="padding: 24px">
       <RoleSwitch
         v-if="hasBothRoles"
         v-model="currentRole"
@@ -23,18 +23,18 @@
 
       <a-empty v-else-if="!project" description="Projet introuvable" />
 
-      <!-- Stats Button (Floating) -->
-      <div v-if="project" class="fixed bottom-8 right-8 z-50 transition-all duration-300 md:bottom-8 md:right-8 sm:bottom-4 sm:right-4">
+      <!-- Stats Button (Floating or integrated) -->
+      <div v-if="project" class="stats-button-container">
         <a-tooltip title="Voir les statistiques">
           <a-button
             type="primary"
             shape="circle"
             size="large"
-            class="h-14 w-14 shadow-lg flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 border-none hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-300"
+            class="stats-button h-14! w-14! shadow-lg! flex! items-center! justify-center!"
             @click="router.push({ name: 'ProjectStats', params: { id: project.id } })"
           >
             <template #icon>
-              <BarChartOutlined class="text-2xl" />
+              <BarChartOutlined style="font-size: 24px" />
             </template>
           </a-button>
         </a-tooltip>
@@ -43,6 +43,45 @@
   </AppLayout>
 </template>
 
+<style scoped>
+.stats-button-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.stats-button {
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stats-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5) !important;
+}
+
+.stats-button:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .stats-button-container {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .stats-button {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .stats-button :deep(.anticon) {
+    font-size: 20px !important;
+  }
+}
+</style>
 
 <script setup>
 import { ref, computed } from 'vue'

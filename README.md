@@ -48,6 +48,7 @@ Cette plateforme permet de gérer des projets, créer des tâches, affecter des 
 - **Filtres sur les projets** (par nom, échéance, etc.)
 - **Vue Kanban** dans le détail d’un projet avec drag & drop des tâches
 - **Vue de statistiques** sur le détail d’un projet (icône flottante en bas à droite)
+- **Reponsive** 
 
 ---
 
