@@ -1,105 +1,3 @@
-<script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth.js'
-import { useRouter } from 'vue-router'
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  ThunderboltOutlined
-} from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
-import { generateData } from "@/utils/initData.js"
-import SeedDataModal from '@/components/common/SeedDataModal.vue'
-
-const authStore = useAuthStore()
-const router = useRouter()
-
-const isRegistering = ref(false)
-const error = ref('')
-const loading = ref(false)
-const isDev = import.meta.env.DEV
-
-const seedLoading = ref(false)
-const showSeedModal = ref(false)
-const seedCredentials = ref([])
-
-const formState = reactive({
-  name: '',
-  email: '',
-  password: '',
-  roles: ['developer']
-})
-
-const roleOptions = [
-  { label: 'Développeur', value: 'developer' },
-  { label: 'Manager', value: 'manager' }
-]
-
-const toggleMode = () => {
-  isRegistering.value = !isRegistering.value
-  error.value = ''
-  formState.name = ''
-  formState.email = ''
-  formState.password = ''
-  formState.roles = ['developer']
-}
-
-const onFinish = async () => {
-  error.value = ''
-  loading.value = true
-
-  if (isRegistering.value && formState.roles.length === 0) {
-    error.value = "Sélectionnez au moins un rôle."
-    loading.value = false
-    return
-  }
-
-  try {
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 500))
-
-    if (isRegistering.value) {
-      authStore.register({ ...formState })
-    } else {
-      authStore.login(formState.email, formState.password)
-    }
-    await router.push('/')
-  } catch (e) {
-    error.value = e.message
-  } finally {
-    loading.value = false
-  }
-}
-
-const runSeed = async () => {
-  seedLoading.value = true
-  try {
-    await new Promise(r => setTimeout(r, 800))
-
-    const fixedUsers = generateData()
-
-    seedCredentials.value = fixedUsers
-    seedLoading.value = false
-    showSeedModal.value = true
-
-    message.success('Données générées avec succès !')
-  } catch (err) {
-    console.error(err)
-    seedLoading.value = false
-    message.error('Erreur lors de la création des données')
-  }
-}
-
-const handleSeedModalClose = () => {
-  location.reload()
-}
-
-onMounted(() => {
-  localStorage.removeItem('seedJustCompleted')
-})
-</script>
-
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <a-card
@@ -195,3 +93,104 @@ onMounted(() => {
     />
   </div>
 </template>
+
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth.js'
+import { useRouter } from 'vue-router'
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  ThunderboltOutlined
+} from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { generateData } from "@/utils/initData.js"
+import SeedDataModal from '@/components/common/SeedDataModal.vue'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const isRegistering = ref(false)
+const error = ref('')
+const loading = ref(false)
+const isDev = import.meta.env.DEV
+
+const seedLoading = ref(false)
+const showSeedModal = ref(false)
+const seedCredentials = ref([])
+
+const formState = reactive({
+  name: '',
+  email: '',
+  password: '',
+  roles: ['developer']
+})
+
+const roleOptions = [
+  { label: 'Développeur', value: 'developer' },
+  { label: 'Manager', value: 'manager' }
+]
+
+const toggleMode = () => {
+  isRegistering.value = !isRegistering.value
+  error.value = ''
+  formState.name = ''
+  formState.email = ''
+  formState.password = ''
+  formState.roles = ['developer']
+}
+
+const onFinish = async () => {
+  error.value = ''
+  loading.value = true
+
+  if (isRegistering.value && formState.roles.length === 0) {
+    error.value = "Sélectionnez au moins un rôle."
+    loading.value = false
+    return
+  }
+
+  try {
+    await new Promise(r => setTimeout(r, 500))
+
+    if (isRegistering.value) {
+      authStore.register({ ...formState })
+    } else {
+      authStore.login(formState.email, formState.password)
+    }
+    await router.push('/')
+  } catch (e) {
+    error.value = e.message
+  } finally {
+    loading.value = false
+  }
+}
+
+const runSeed = async () => {
+  seedLoading.value = true
+  try {
+    await new Promise(r => setTimeout(r, 800))
+
+    const fixedUsers = generateData()
+
+    seedCredentials.value = fixedUsers
+    seedLoading.value = false
+    showSeedModal.value = true
+
+    message.success('Données générées avec succès !')
+  } catch (err) {
+    console.error(err)
+    seedLoading.value = false
+    message.error('Erreur lors de la création des données')
+  }
+}
+
+const handleSeedModalClose = () => {
+  location.reload()
+}
+
+onMounted(() => {
+  localStorage.removeItem('seedJustCompleted')
+})
+</script>

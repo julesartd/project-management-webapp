@@ -1,39 +1,51 @@
 <template>
   <div class="w-full">
-    <a-page-header
-      class="bg-white rounded-xl shadow-sm mb-4 p-6 border border-gray-100"
-      @back="$emit('back')"
-      :title="project.name"
-      :sub-title="project.description"
-    >
-      <template #extra>
-        <div class="flex flex-col items-end gap-3 w-full md:w-auto md:items-center md:flex-row">
-          <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
-            <CheckCircleOutlined /> Vous gérez ce projet
-          </a-tag>
-          <a-tag v-else color="orange" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
-            <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
-          </a-tag>
+    <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
+      <!-- Back button -->
+      <div class="flex items-center mb-4">
+        <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
+          <ArrowLeftOutlined />
+          <span class="hidden sm:inline">Retour</span>
+        </a-button>
+      </div>
 
-          <ActionButton
-            v-if="!isProjectManager"
-            variant="secondary"
-            :icon="UserAddOutlined"
-            @click="handleBecomeManager"
-          >
-            Se déclarer gérant
-          </ActionButton>
-          <ActionButton
-            v-if="isProjectManager"
-            variant="purple"
-            :icon="PlusOutlined"
-            @click="showCreateTaskForm"
-          >
-            Nouvelle tâche
-          </ActionButton>
-        </div>
-      </template>
-    </a-page-header>
+      <!-- Project Title and Description - Always on top on mobile -->
+      <div class="mb-4">
+        <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
+        <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
+      </div>
+
+      <!-- Badge and Button - Below title on mobile -->
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+        <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+          <CheckCircleOutlined class="flex items-center justify-center" style="font-size: 16px;" />
+          <span>Vous gérez ce projet</span>
+        </a-tag>
+        <a-tag v-else color="orange" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+          <ExclamationCircleOutlined class="flex items-center justify-center" style="font-size: 16px;" />
+          <span>Vous ne gérez pas ce projet</span>
+        </a-tag>
+
+        <ActionButton
+          v-if="!isProjectManager"
+          variant="secondary"
+          :icon="UserAddOutlined"
+          @click="handleBecomeManager"
+          class="w-full md:w-auto"
+        >
+          Se déclarer gérant
+        </ActionButton>
+        <ActionButton
+          v-if="isProjectManager"
+          variant="purple"
+          :icon="PlusOutlined"
+          @click="showCreateTaskForm"
+          class="w-full md:w-auto"
+        >
+          Nouvelle tâche
+        </ActionButton>
+      </div>
+    </div>
 
     <div class="p-6 bg-white rounded-xl shadow-sm mb-4 border border-gray-100">
       <a-row :gutter="[16, 16]">
@@ -177,8 +189,6 @@
           />
         </div>
       </a-tab-pane>
-
-      
     </a-tabs>
 
     <TaskForm
@@ -233,7 +243,8 @@ import {
   FallOutlined,
   FileTextOutlined,
   ClockCircleOutlined,
-  WarningOutlined
+  WarningOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useTasksStore, TASK_STATUS } from '@/stores/tasks'
@@ -262,7 +273,6 @@ const authStore = useAuthStore()
 const tasksStore = useTasksStore()
 const projectsStore = useProjectsStore()
 
-// Detect mobile and set default tab accordingly
 const isMobile = ref(window.innerWidth <= 768)
 const activeTab = ref(isMobile.value ? 'all' : 'kanban')
 const taskFormVisible = ref(false)
@@ -503,7 +513,7 @@ function handleOpenTask(task) {
 </script>
 
 <style scoped>
-@reference "../../index.css";
+@import "../../index.css";
 
 /* Hide Kanban tab on mobile */
 @media (max-width: 768px) {
@@ -542,6 +552,19 @@ function handleOpenTask(task) {
 
 :deep(.ant-tabs-ink-bar) {
   @apply bg-indigo-600;
+}
+
+/* Center badge icons */
+:deep(.ant-tag) {
+  @apply flex items-center;
+}
+
+:deep(.ant-tag .anticon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
 }
 </style>
 

@@ -11,7 +11,6 @@ export const useProjectsStore = defineStore('projects', () => {
     const raw = JSON.parse(localStorage.getItem('projects')) || []
     const projects = ref(raw)
 
-
     const userProjects = computed(() => {
         if (!authStore.currentUser) return []
         if (authStore.hasRole('manager')) return projects.value

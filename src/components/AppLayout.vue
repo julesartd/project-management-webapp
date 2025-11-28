@@ -1,22 +1,9 @@
-<script setup>
-import { useAuthStore } from '@/stores/auth.js'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
-
-const authStore = useAuthStore()
-const user = authStore.currentUser
-
-const roleColors = {
-  manager: 'purple',
-  developer: 'blue'
-}
-</script>
-
 <template>
   <a-layout class="min-h-screen bg-transparent">
-    <a-layout-header class="fixed w-full z-50 px-6 h-16 flex justify-between items-center backdrop-blur-md !bg-white/90 border-b border-indigo-500/10 shadow-sm transition-all duration-300">
+    <a-layout-header class="fixed w-full z-50 px-6 h-16 flex justify-between items-center backdrop-blur-md bg-white/90! border-b border-indigo-500/10 shadow-sm transition-all duration-300">
       <div class="flex items-center">
         <h2 class="m-0 flex items-center">
-          <router-link to="/" class="text-xl font-extrabold tracking-tight inline-flex items-center h-16 bg-clip-text text-transparent bg-gradient-to-r from-[#667eea] to-[#764ba2] hover:scale-105 transition-transform duration-300">
+          <router-link to="/" class="text-xl font-extrabold tracking-tight inline-flex items-center h-16 bg-clip-text text-transparent bg-linear-to-r from-[#667eea] to-[#764ba2] hover:scale-105 transition-transform duration-300">
             Gestion Projet
           </router-link>
         </h2>
@@ -32,7 +19,7 @@ const roleColors = {
         <a-divider type="vertical" class="hidden md:block h-6 bg-gray-300" />
 
         <div class="flex items-center gap-3 cursor-default group">
-          <a-avatar :src="user?.avatar" class="bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center border-2 border-white shadow-md transition-transform duration-300 group-hover:scale-110">
+          <a-avatar :src="user?.avatar" class="bg-linear-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center border-2 border-white shadow-md transition-transform duration-300 group-hover:scale-110">
             <template #icon v-if="!user?.avatar"><UserOutlined class="text-white" /></template>
           </a-avatar>
           <span class="font-semibold text-gray-700 hidden sm:block">{{ user?.name }}</span>
@@ -58,4 +45,18 @@ const roleColors = {
     </a-layout-footer>
   </a-layout>
 </template>
+
+<script setup>
+import { useAuthStore } from '@/stores/auth.js'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
+
+const authStore = useAuthStore()
+const user = authStore.currentUser
+
+const roleColors = {
+  manager: 'purple',
+  developer: 'blue'
+}
+</script>
+
 

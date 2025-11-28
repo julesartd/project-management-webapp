@@ -14,8 +14,6 @@
   
   --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
-/* Base Styles */
 body {
   font-family: var(--font-family-sans);
   @apply bg-gray-50 min-h-screen text-gray-900 antialiased;
@@ -23,7 +21,6 @@ body {
   background-attachment: fixed;
 }
 
-/* Ant Design Overrides using Tailwind */
 .ant-btn-primary {
   @apply border-none shadow-sm transition-all duration-300;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -41,11 +38,20 @@ body {
   @apply rounded-md font-medium border-none px-2.5 py-0.5;
 }
 
-/* Utilities */
 .glass {
   @apply bg-white/90 backdrop-blur-md border border-white/20;
 }
 
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600;
+  @apply bg-clip-text text-transparent bg-linear-to-r from-indigo-500 to-purple-600;
+}
+.ant-modal-wrap,
+.ant-drawer-content-wrapper,
+.ant-modal-mask {
+  touch-action: none;
+}
+
+.ant-modal-body,
+.ant-drawer-body {
+  touch-action: pan-y;
 }

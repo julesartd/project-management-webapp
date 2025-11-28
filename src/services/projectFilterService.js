@@ -1,9 +1,7 @@
 import dayjs from 'dayjs'
 
 export class ProjectFilterService {
-    /**
-     * Filter projects based on provided criteria
-     */
+ 
     static filterProjects(projects, filters) {
         if (!Array.isArray(projects)) {
             console.warn('filterProjects: projects is not an array', projects)
@@ -24,9 +22,6 @@ export class ProjectFilterService {
     }
 
 
-    /**
-     * Filter by search term (name or description)
-     */
     static filterBySearch(projects, searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') {
             return projects
@@ -39,9 +34,6 @@ export class ProjectFilterService {
         )
     }
 
-    /**
-     * Filter by project status
-     */
     static filterByStatus(projects, status) {
         if (!status) {
             return projects
@@ -50,9 +42,6 @@ export class ProjectFilterService {
         return projects.filter(project => project.status === status)
     }
 
-    /**
-     * Filter by deadline date range
-     */
     static filterByDeadlineRange(projects, from, to) {
         if (!from && !to) {
             return projects

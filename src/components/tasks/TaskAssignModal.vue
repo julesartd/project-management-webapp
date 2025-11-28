@@ -71,6 +71,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { message, Empty } from 'ant-design-vue'
+import { useUserDisplay } from '@/composables/useUserDisplay'
 
 const props = defineProps({
   open: {
@@ -88,6 +89,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'submit', 'cancel'])
+
+const { getInitialsFromName: getInitials } = useUserDisplay()
 
 const loading = ref(false)
 const selectedUsers = ref([])
@@ -115,15 +118,6 @@ watch(() => props.open, (newVal) => {
 
 function filterUsers(input, option) {
   return option.label.toLowerCase().includes(input.toLowerCase())
-}
-
-function getInitials(name) {
-  return name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
 }
 
 function removeUser(userId) {

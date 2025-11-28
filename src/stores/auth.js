@@ -39,9 +39,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     function logout() {
-        currentUser.value = null
-        localStorage.removeItem('currentUser')
-        router.push('/login')
+        try {
+            currentUser.value = null
+            localStorage.removeItem('currentUser')
+            router.push('/login')
+        } catch (error) {
+            console.error('Erreur lors de la déconnexion:', error)
+            currentUser.value = null
+            throw new Error('Erreur lors de la déconnexion')
+        }
     }
 
 
