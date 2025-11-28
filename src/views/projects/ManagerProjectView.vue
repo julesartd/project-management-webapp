@@ -563,5 +563,29 @@ function handleOpenTask(task) {
   line-height: 1;
   vertical-align: middle;
 }
+
+:deep(.ant-statistic-content) {
+  display: flex;
+  align-items: baseline;
+}
+
+:deep(.ant-statistic-content-prefix) {
+  display: inline-flex;
+  align-items: baseline;
+  margin-right: 8px;
+  line-height: 1;
+}
+
+:deep(.ant-statistic-content-prefix .anticon) {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+:deep(.ant-statistic-content-value) {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
 </style>
 
