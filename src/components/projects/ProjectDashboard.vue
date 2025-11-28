@@ -1,11 +1,11 @@
 <template>
-  <div class="project-dashboard">
-    <a-card class="dashboard-card" :bordered="false">
-      <div class="dashboard-header">
-        <div class="header-content">
-          <div class="header-text">
-            <h1 class="header-title">Gestion des Projets</h1>
-            <p class="header-subtitle">{{ projectsSubtitle }}</p>
+  <div class="min-h-screen p-3 md:p-6">
+    <a-card class="w-full min-h-[80vh] mx-auto rounded-2xl md:rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-indigo-500/10 overflow-hidden" :bordered="false">
+      <div class="relative mb-0 after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#667eea] after:to-[#764ba2] after:rounded-sm">
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-6">
+          <div class="flex-1">
+            <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
+            <p class="text-sm md:text-base text-gray-500 font-medium m-0">{{ projectsSubtitle }}</p>
           </div>
           <ActionButton
               v-if="hasRole('manager')"
@@ -18,16 +18,16 @@
         </div>
       </div>
 
-      <a-divider style="margin: 24px 0"/>
+      <a-divider class="my-6 border-indigo-500/10"/>
 
       <ProjectFilters
           v-model="filters"
           @filter="handleFilter"
       />
 
-      <a-divider style="margin: 24px 0"/>
+      <a-divider class="my-6 border-indigo-500/10"/>
 
-      <div class="dashboard-content">
+      <div class="m-0">
         <ProjectList
             :projects="filteredProjects"
             @edit="handleEdit"
@@ -155,86 +155,28 @@ async function confirmDelete() {
 </script>
 
 <style scoped>
-.project-dashboard {
-  min-height: 100vh;
+@import "../../index.css";
+
+:deep(.ant-card-body) {
+  padding: 1.5rem;
+  background: linear-gradient(to bottom right, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
 }
 
-.dashboard-card {
-  width: 100%;
-  min-height: 80vh;
-  margin: 0 auto;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: box-shadow 0.3s ease;
-}
-
-.dashboard-card:hover {
-  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.12);
-}
-
-.dashboard-card :deep(.ant-card-body) {
-  padding: 32px;
-}
-
-.dashboard-header {
-  margin-bottom: 0;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-}
-
-.header-text {
-  flex: 1;
-}
-
-.header-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 8px 0;
-  line-height: 1.2;
-}
-
-.header-subtitle {
-  font-size: 16px;
-  color: #666;
-  margin: 0;
-}
-
-
-.dashboard-content {
-  margin: 0;
-}
-
-.dashboard-content :deep(.ant-list) {
-  background: transparent;
-}
-
-@media (max-width: 768px) {
-  .project-dashboard {
-    padding: 12px;
+@media (min-width: 768px) {
+  :deep(.ant-card-body) {
+    padding: 2.5rem;
   }
+}
 
-  .dashboard-card :deep(.ant-card-body) {
-    padding: 20px;
-  }
+:deep(.ant-list) {
+  background-color: transparent;
+}
 
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
+:deep(.ant-list-grid .ant-col) {
+  margin-bottom: 1.5rem;
+}
 
-  .header-title {
-    font-size: 22px;
-  }
-
-  .header-subtitle {
-    font-size: 14px;
-  }
+:deep(.ant-divider) {
+  border-color: rgba(99, 102, 241, 0.1);
 }
 </style>

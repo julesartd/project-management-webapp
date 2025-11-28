@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div style="padding: 24px">
+    <div class="p-6">
       <RoleSwitch
         v-if="hasBothRoles"
         v-model="currentRole"
@@ -23,18 +23,18 @@
 
       <a-empty v-else-if="!project" description="Projet introuvable" />
 
-      <!-- Stats Button (Floating or integrated) -->
-      <div v-if="project" class="fixed bottom-8 right-8">
+      <!-- Stats Button (Floating) -->
+      <div v-if="project" class="fixed bottom-8 right-8 z-50 transition-all duration-300 md:bottom-8 md:right-8 sm:bottom-4 sm:right-4">
         <a-tooltip title="Voir les statistiques">
-          <a-button 
-            type="primary" 
-            shape="circle" 
-            size="large" 
-            class="h-14! w-14! shadow-lg! flex! items-center! justify-center!"
+          <a-button
+            type="primary"
+            shape="circle"
+            size="large"
+            class="h-14 w-14 shadow-lg flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 border-none hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-300"
             @click="router.push({ name: 'ProjectStats', params: { id: project.id } })"
           >
             <template #icon>
-              <BarChartOutlined style="font-size: 24px" />
+              <BarChartOutlined class="text-2xl" />
             </template>
           </a-button>
         </a-tooltip>
@@ -42,6 +42,7 @@
     </div>
   </AppLayout>
 </template>
+
 
 <script setup>
 import { ref, computed } from 'vue'

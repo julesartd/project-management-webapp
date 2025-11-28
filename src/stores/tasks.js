@@ -148,6 +148,17 @@ export const useTasksStore = defineStore('tasks', () => {
         )
     }
 
+    function updateTaskStatus(taskId, newStatus) {
+        const task = tasks.value.find(t => String(t.id) === String(taskId))
+        if (!task) throw new Error('Task not found')
+
+        task.status = newStatus
+        task.updatedAt = new Date().toISOString()
+        saveToStorage()
+
+        return task
+    }
+
     return {
         tasks,
         createTask,
@@ -163,6 +174,7 @@ export const useTasksStore = defineStore('tasks', () => {
         getTasksAssignedTo,
         getNonValidatedTasks,
         hasTaskInProject,
+        updateTaskStatus,
         tasksCountByProject
     }
 })

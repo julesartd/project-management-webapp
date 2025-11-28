@@ -1,21 +1,20 @@
 <template>
-  <div class="manager-project-view">
+  <div class="w-full">
     <a-page-header
+      class="bg-white rounded-xl shadow-sm mb-4 p-6 border border-gray-100"
       @back="$emit('back')"
       :title="project.name"
       :sub-title="project.description"
     >
-      <template #tags>
-        <a-tag v-if="isProjectManager" color="green">
-          <CheckCircleOutlined /> Vous gérez ce projet
-        </a-tag>
-        <a-tag v-else color="orange">
-          <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
-        </a-tag>
-      </template>
-
       <template #extra>
-        <a-space>
+        <div class="flex flex-col items-end gap-3 w-full md:w-auto md:items-center md:flex-row">
+          <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+            <CheckCircleOutlined /> Vous gérez ce projet
+          </a-tag>
+          <a-tag v-else color="orange" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
+            <ExclamationCircleOutlined /> Vous ne gérez pas ce projet
+          </a-tag>
+
           <ActionButton
             v-if="!isProjectManager"
             variant="secondary"
@@ -32,11 +31,11 @@
           >
             Nouvelle tâche
           </ActionButton>
-        </a-space>
+        </div>
       </template>
     </a-page-header>
 
-    <div class="dashboard-stats">
+    <div class="p-6 bg-white rounded-xl shadow-sm mb-4 border border-gray-100">
       <a-row :gutter="[16, 16]">
         <a-col :xs="24" :sm="12" :md="6">
           <a-statistic
@@ -93,71 +92,93 @@
       v-if="isProjectManager && nonValidatedTasks.length > 0"
       type="warning"
       show-icon
-      style="margin: 16px 0"
+      class="my-4 rounded-lg border-orange-200 bg-orange-50"
     >
       <template #message>
-        {{ nonValidatedTasks.length }} tâche(s) en attente de validation
+        <span class="font-medium">{{ nonValidatedTasks.length }} tâche(s) en attente de validation</span>
       </template>
       <template #description>
-        <a-button type="link" size="small" @click="handleValidateAll">
+        <a-button type="link" size="small" @click="handleValidateAll" class="text-orange-600 hover:text-orange-800 font-medium pl-0">
           Valider toutes les tâches
         </a-button>
       </template>
     </a-alert>
 
-    <a-tabs v-model:activeKey="activeTab" class="tasks-tabs">
+    <a-tabs v-model:activeKey="activeTab" class="bg-white rounded-xl shadow-sm border border-gray-100">
+
+      <a-tab-pane key="kanban" tab="Kanban">
+        <div class="p-6">
+          <KanbanBoard
+            :tasks="projectTasks"
+            :users="allUsers"
+            :is-project-manager="isProjectManager"
+            @update-status="handleStatusChange"
+            @open-task="handleOpenTask"
+            @comment="handleComment"
+          />
+        </div>
+      </a-tab-pane>
+
       <a-tab-pane key="all" tab="Toutes les tâches">
-        <TaskList
-          :tasks="projectTasks"
-          :can-edit="isProjectManager"
-          :can-delete="isProjectManager"
-          :can-validate="isProjectManager"
-          :can-assign="isProjectManager"
-          :users="allUsers"
-          empty-text="Aucune tâche dans ce projet"
-          @edit="handleEditTask"
-          @delete="handleDeleteTask"
-          @comment="handleComment"
-          @toggle-complete="handleToggleComplete"
-          @validate="handleValidateTask"
-          @assign="handleAssignTask"
-        />
+        <div class="p-6">
+          <TaskList
+            :tasks="projectTasks"
+            :can-edit="isProjectManager"
+            :can-delete="isProjectManager"
+            :can-validate="isProjectManager"
+            :can-assign="isProjectManager"
+            :users="allUsers"
+            empty-text="Aucune tâche dans ce projet"
+            @edit="handleEditTask"
+            @delete="handleDeleteTask"
+            @comment="handleComment"
+            @toggle-complete="handleToggleComplete"
+            @validate="handleValidateTask"
+            @assign="handleAssignTask"
+          />
+        </div>
       </a-tab-pane>
 
       <a-tab-pane key="non-validated" :tab="`Non validées (${nonValidatedTasks.length})`">
-        <TaskList
-          :tasks="nonValidatedTasks"
-          :can-edit="isProjectManager"
-          :can-delete="isProjectManager"
-          :can-validate="isProjectManager"
-          :can-assign="isProjectManager"
-          :users="allUsers"
-          empty-text="Aucune tâche en attente de validation"
-          @edit="handleEditTask"
-          @delete="handleDeleteTask"
-          @comment="handleComment"
-          @validate="handleValidateTask"
-          @assign="handleAssignTask"
-        />
+        <div class="p-6">
+          <TaskList
+            :tasks="nonValidatedTasks"
+            :can-edit="isProjectManager"
+            :can-delete="isProjectManager"
+            :can-validate="isProjectManager"
+            :can-assign="isProjectManager"
+            :users="allUsers"
+            empty-text="Aucune tâche en attente de validation"
+            @edit="handleEditTask"
+            @delete="handleDeleteTask"
+            @comment="handleComment"
+            @validate="handleValidateTask"
+            @assign="handleAssignTask"
+          />
+        </div>
       </a-tab-pane>
 
       <a-tab-pane key="overdue" :tab="`En retard (${overdueCount})`">
-        <TaskList
-          :tasks="overdueTasks"
-          :can-edit="isProjectManager"
-          :can-delete="isProjectManager"
-          :can-validate="isProjectManager"
-          :can-assign="isProjectManager"
-          :users="allUsers"
-          empty-text="Aucune tâche en retard"
-          @edit="handleEditTask"
-          @delete="handleDeleteTask"
-          @comment="handleComment"
-          @toggle-complete="handleToggleComplete"
-          @validate="handleValidateTask"
-          @assign="handleAssignTask"
-        />
+        <div class="p-6">
+          <TaskList
+            :tasks="overdueTasks"
+            :can-edit="isProjectManager"
+            :can-delete="isProjectManager"
+            :can-validate="isProjectManager"
+            :can-assign="isProjectManager"
+            :users="allUsers"
+            empty-text="Aucune tâche en retard"
+            @edit="handleEditTask"
+            @delete="handleDeleteTask"
+            @comment="handleComment"
+            @toggle-complete="handleToggleComplete"
+            @validate="handleValidateTask"
+            @assign="handleAssignTask"
+          />
+        </div>
       </a-tab-pane>
+
+      
     </a-tabs>
 
     <TaskForm
@@ -222,6 +243,7 @@ import TaskList from '@/components/tasks/TaskList.vue'
 import TaskComments from '@/components/tasks/TaskComments.vue'
 import TaskForm from '@/components/tasks/TaskForm.vue'
 import TaskAssignModal from '@/components/tasks/TaskAssignModal.vue'
+import KanbanBoard from "@/components/tasks/KanbanBoard.vue";
 
 const props = defineProps({
   project: {
@@ -240,7 +262,9 @@ const authStore = useAuthStore()
 const tasksStore = useTasksStore()
 const projectsStore = useProjectsStore()
 
-const activeTab = ref('all')
+// Detect mobile and set default tab accordingly
+const isMobile = ref(window.innerWidth <= 768)
+const activeTab = ref(isMobile.value ? 'all' : 'kanban')
 const taskFormVisible = ref(false)
 const taskFormMode = ref('create')
 const selectedTaskId = ref(null)
@@ -462,50 +486,62 @@ function handleAssignSubmit(selectedUserIds) {
     message.error(error.message || 'Erreur lors de la mise à jour des affectations')
   }
 }
+
+function handleStatusChange(taskId, newStatus) {
+  try {
+    tasksStore.updateTaskStatus(taskId, newStatus)
+    message.success('Statut de la tâche mis à jour')
+  } catch (error) {
+    message.error(error.message || 'Erreur lors de la mise à jour du statut')
+  }
+}
+
+function handleOpenTask(task) {
+  handleEditTask(task);
+}
+
 </script>
 
 <style scoped>
-.manager-project-view {
-  width: 100%;
+@reference "../../index.css";
+
+/* Hide Kanban tab on mobile */
+@media (max-width: 768px) {
+  :deep(.ant-tabs-tab:first-child) {
+    display: none !important;
+  }
 }
 
-.manager-project-view :deep(.ant-tag) {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+:deep(.ant-page-header-heading-title) {
+  @apply text-xl font-bold text-gray-900;
 }
 
-:deep(.ant-page-header) {
-  padding: 16px 24px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  margin-bottom: 16px;
-}
-
-.dashboard-stats {
-  padding: 24px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  margin-bottom: 16px;
-}
-
-.tasks-tabs {
-  background: white;
-  padding: 16px 24px;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+:deep(.ant-page-header-heading-sub-title) {
+  @apply text-gray-500 text-sm;
 }
 
 :deep(.ant-statistic-title) {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.45);
+  @apply text-sm text-gray-500 font-medium mb-1;
 }
 
 :deep(.ant-statistic-content) {
-  font-size: 24px;
-  font-weight: 600;
+  @apply text-2xl font-bold text-gray-800;
+}
+
+:deep(.ant-tabs-nav) {
+  @apply px-6 pt-4 mb-0 border-b border-gray-100;
+}
+
+:deep(.ant-tabs-tab) {
+  @apply px-4 py-3 font-medium text-gray-600 hover:text-indigo-600 transition-colors;
+}
+
+:deep(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  @apply text-indigo-600 font-semibold;
+}
+
+:deep(.ant-tabs-ink-bar) {
+  @apply bg-indigo-600;
 }
 </style>
+

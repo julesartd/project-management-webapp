@@ -1,13 +1,16 @@
 <template>
-  <a-card hoverable class="project-card" @click="$emit('view')">
+  <a-card hoverable class="group relative rounded-2xl overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl border-none shadow-sm" @click="$emit('view')">
+    <!-- Top Gradient Border -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#667eea] to-[#764ba2] transition-all duration-300 group-hover:h-1.5"></div>
+
     <template #title>
-      <a-typography-text strong>{{ project.name }}</a-typography-text>
+      <a-typography-text strong class="text-lg font-semibold text-gray-900">{{ project.name }}</a-typography-text>
     </template>
 
     <template #extra>
       <a-dropdown v-if="canManage" @click.stop>
-        <a-button type="text" size="small">
-          <MoreOutlined />
+        <a-button type="text" size="small" class="hover:bg-indigo-50 rounded-md transition-colors">
+          <MoreOutlined class="text-indigo-500 text-lg" />
         </a-button>
         <template #overlay>
           <a-menu>
@@ -22,33 +25,39 @@
       </a-dropdown>
     </template>
 
-    <a-typography-paragraph :ellipsis="{ rows: 2 }" :content="project.description" class="project-description" />
+    <div class="mb-4 text-gray-500 text-sm leading-relaxed min-h-[44px] line-clamp-2">
+      {{ project.description }}
+    </div>
 
-    <a-space direction="vertical" style="width: 100%">
-      <div>
-        <CalendarOutlined />
-        <span class="ml-2">
-          Échéance : {{ formattedDeadline }}
-        </span>
+    <a-space direction="vertical" class="w-full">
+      <div class="flex items-center text-gray-500 font-medium text-sm">
+        <CalendarOutlined class="text-indigo-500 mr-2" />
+        <span>Échéance : {{ formattedDeadline }}</span>
       </div>
 
-      <a-progress
-          :percent="progress"
-          :status="status"
-          size="small"
-      />
+      <div class="my-3">
+        <a-progress
+            :percent="progress"
+            :status="status"
+            :show-info="true"
+            :format="() => `${progress}%`"
+            size="small"
+            :stroke-color="{ '0%': '#667eea', '100%': '#764ba2' }"
+            class="mb-0"
+        />
+      </div>
 
-      <a-space>
-        <a-tag color="blue">
+      <div class="flex items-center gap-2 flex-wrap">
+        <a-tag color="blue" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           {{ taskCount }} tâche(s)
         </a-tag>
-        <a-tag v-if="isOverdue" color="red">
+        <a-tag v-if="isOverdue" color="red" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           En retard
         </a-tag>
-        <a-tag v-else-if="isAtRisk" color="orange">
+        <a-tag v-else-if="isAtRisk" color="orange" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           À risque
         </a-tag>
-      </a-space>
+      </div>
     </a-space>
   </a-card>
 </template>
@@ -91,13 +100,15 @@ const taskCount = computed(() =>
     tasksStore.getTasksByProject(props.project.id).length
 )
 
-const progress = computed(() =>
-    projectsStore.getProjectProgress(props.project.id)
-)
+const progress = computed(() => {
+  const prog = projectsStore.getProjectProgress(props.project.id)
+  return prog ?? 0
+})
 
-const status = computed(() =>
-    projectsStore.getProjectStatus(props.project.id)
-)
+const status = computed(() => {
+  const stat = projectsStore.getProjectStatus(props.project.id)
+  return stat || 'normal'
+})
 
 const isOverdue = computed(() =>
     projectsStore.isProjectOverdue(props.project.id)
@@ -108,17 +119,3 @@ const isAtRisk = computed(() =>
 )
 </script>
 
-<style scoped>
-.project-card {
-  cursor: pointer;
-}
-
-.project-description {
-  margin-bottom: 16px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.ml-2 {
-  margin-left: 8px;
-}
-</style>

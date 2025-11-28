@@ -1,6 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #1890ff;
+  --color-primary-light: #40a9ff;
+  --color-primary-dark: #096dd9;
+  --color-secondary: #722ed1;
+  --color-secondary-light: #9254de;
+  --color-secondary-dark: #531dab;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-error: #ff4d4f;
+  
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Base Styles */
 body {
-    font-family: 'Inter', sans-serif;
+  font-family: var(--font-family-sans);
+  @apply bg-gray-50 min-h-screen text-gray-900 antialiased;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-attachment: fixed;
+}
+
+/* Ant Design Overrides using Tailwind */
+.ant-btn-primary {
+  @apply border-none shadow-sm transition-all duration-300;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.ant-btn-primary:hover {
+  @apply shadow-md -translate-y-0.5;
+}
+
+.ant-card {
+  @apply rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300;
+}
+
+.ant-tag {
+  @apply rounded-md font-medium border-none px-2.5 py-0.5;
+}
+
+/* Utilities */
+.glass {
+  @apply bg-white/90 backdrop-blur-md border border-white/20;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600;
 }
