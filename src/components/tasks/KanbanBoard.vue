@@ -1,30 +1,35 @@
 <template>
-  <div class="kanban-board">
+  <div class="flex gap-4 p-4 w-full overflow-x-auto">
     <div
-      class="kanban-column"
+      class="p-2 flex-1 flex flex-col gap-2 rounded-md min-w-[280px] flex-shrink-0 min-h-[300px]"
+      :class="{
+        'bg-red-50': column.status === TASK_STATUS.NOT_VALIDATED,
+        'bg-blue-50': column.status === TASK_STATUS.VALIDATED,
+        'bg-green-50': column.status === TASK_STATUS.COMPLETED
+      }"
       v-for="column in columns"
       :key="column.status"
       :data-status="column.status"
     >
-      <h3>{{ column.label }} ({{ column.tasks.length }})</h3>
+      <h3 class="text-center mb-2 font-semibold text-gray-700 min-h-0">{{ column.label }} ({{ column.tasks.length }})</h3>
 
       <draggable
         v-model="column.tasks"
         group="tasks"
         item-key="id"
-        class="kanban-drop-area"
+        class="flex flex-col gap-2.5 flex-1 p-2.5 min-h-[300px]"
         @end="onDragEnd"
         :move="allowDrop"
         @start="checkCanDrag"
       >
         <template #item="{ element }">
-          <div class="kanban-task" @dblclick="openTask(element)">
-            <p class="task-title">{{ element.title }}</p>
-            <p class="task-deadline" v-if="element.deadline">
+          <div class="bg-white rounded p-3 cursor-grab shadow-sm transition-all duration-200 hover:bg-indigo-50 hover:shadow-md border border-transparent hover:border-indigo-100" @dblclick="openTask(element)">
+            <p class="font-semibold m-0 text-gray-800">{{ element.title }}</p>
+            <p class="text-xs text-gray-500 mt-1 mb-0" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
             </p>
 
-            <div v-if="element.assignedTo?.length" class="task-avatars">
+            <div v-if="element.assignedTo?.length" class="mt-2 flex items-center gap-1">
               <a-avatar-group :max-count="3" size="small">
                 <a-avatar
                   v-for="userId in element.assignedTo"
@@ -38,12 +43,12 @@
             </div>
 
             
-            <div v-if="element.comments?.length" class="task-comments">
+            <div v-if="element.comments?.length" class="text-xs text-gray-400 mt-2 flex justify-end">
               <a-button
                 type="text"
                 size="small"
                 @click.stop="handleComment(element)"
-                class="comments-button"
+                class="inline-flex items-center gap-1 px-1 h-auto text-gray-400 hover:text-indigo-600"
               >
                 <CommentOutlined />
                 <span>{{ element.comments.length }}</span>
@@ -93,7 +98,8 @@ watch(() => props.tasks, updateColumns, { immediate: true, deep: true });
 
 function onDragEnd(event) {
   const task = event.item.__draggable_context.element;
-  const newStatus = event.to.closest(".kanban-column")?.dataset.status;
+  // Use closest to find the parent column div
+  const newStatus = event.to.closest("[data-status]")?.dataset.status;
   if (!newStatus || task.status === newStatus) return;
 
   emit("update-status", task.id, newStatus);
@@ -141,78 +147,5 @@ function getUserInitials(userId) {
 </script>
 
 <style scoped>
-
-.task-avatars {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px; 
-}
-
-.comments-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 0;
-  height: auto;
-}
-
-.kanban-board {
-  display: flex;
-  gap: 16px;
-  padding: 16px;
-  width: 100%;
-  overflow-x: auto;
-}
-
-.kanban-column {
-  padding: 8px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-radius: 6px;
-  min-width: 0;
-  flex-shrink: 0;
-  min-height: 300px;
-}
-
-/* Si besoin de changer les couleurs des colonnes, c'est ici */
-.kanban-column[data-status="not_validated"] { background-color: #fff1f0; }
-.kanban-column[data-status="validated"] { background-color: #e6f7ff; }
-.kanban-column[data-status="completed"] { background-color: #f6ffed; }
-
-.kanban-column h3 {
-  text-align: center;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-  min-height: 0;
-}
-
-.kanban-drop-area {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  padding: 10px;
-  min-height: 300px;
-}
-
-.kanban-task {
-  background: white;
-  border-radius: 4px;
-  padding: 8px;
-  cursor: grab;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  transition: all 0.2s;
-}
-
-.kanban-task:hover { background: #f0f5ff; }
-
-.task-title { font-weight: 600; margin: 0; }
-.task-deadline { font-size: 12px; color: #888; margin-top: 4px; }
-
-.task-assigned { margin-top: 6px; }
-.task-comments { font-size: 12px; color: #888; margin-top: 4px; }
+/* No custom CSS needed, all Tailwind utility classes */
 </style>

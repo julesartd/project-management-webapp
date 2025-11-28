@@ -1,6 +1,7 @@
 <template>
-  <div class="developer-project-view">
+  <div class="w-full">
     <a-page-header
+      class="bg-white rounded-xl shadow-sm mb-4 p-6 border border-gray-100"
       @back="$emit('back')"
       :title="project.name"
       :sub-title="project.description"
@@ -16,33 +17,37 @@
       </template>
 
       <template #footer>
-        <a-tabs>
+        <a-tabs class="bg-white rounded-xl shadow-sm border border-gray-100">
           <a-tab-pane key="assigned" tab="Mes tâches">
-            <TaskList
-              :tasks="assignedTasks"
-              :can-edit="false"
-              :can-delete="false"
-              :can-validate="false"
-              :users="allUsers"
-              :show-filters="true"
-              empty-text="Aucune tâche ne vous est affectée"
-              @comment="handleComment"
-              @toggle-complete="handleToggleComplete"
-            />
+            <div class="p-6">
+              <TaskList
+                :tasks="assignedTasks"
+                :can-edit="false"
+                :can-delete="false"
+                :can-validate="false"
+                :users="allUsers"
+                :show-filters="true"
+                empty-text="Aucune tâche ne vous est affectée"
+                @comment="handleComment"
+                @toggle-complete="handleToggleComplete"
+              />
+            </div>
           </a-tab-pane>
 
           <a-tab-pane key="all" tab="Toutes les tâches">
-            <TaskList
-              :tasks="otherTasks"
-              :can-edit="false"
-              :can-delete="false"
-              :can-validate="false"
-              :users="allUsers"
-              :show-filters="true"
-              empty-text="Aucune autre tâche dans ce projet"
-              @comment="handleComment"
-              @toggle-complete="handleToggleComplete"
-            />
+            <div class="p-6">
+              <TaskList
+                :tasks="otherTasks"
+                :can-edit="false"
+                :can-delete="false"
+                :can-validate="false"
+                :users="allUsers"
+                :show-filters="true"
+                empty-text="Aucune autre tâche dans ce projet"
+                @comment="handleComment"
+                @toggle-complete="handleToggleComplete"
+              />
+            </div>
           </a-tab-pane>
         </a-tabs>
       </template>
@@ -194,35 +199,31 @@ function handleAddComment(commentData) {
 </script>
 
 <style scoped>
-.developer-project-view {
-  width: 100%;
+@reference "../../index.css";
+
+/* Removed custom CSS in favor of Tailwind classes in template */
+:deep(.ant-page-header-heading-title) {
+  @apply text-xl font-bold text-gray-900;
 }
 
-:deep(.ant-page-header) {
-  padding: 16px 24px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  margin-bottom: 16px;
-}
-
-:deep(.ant-tabs) {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+:deep(.ant-page-header-heading-sub-title) {
+  @apply text-gray-500 text-sm;
 }
 
 :deep(.ant-tabs-nav) {
-  padding: 16px 24px 0;
-  margin-bottom: 0;
+  @apply px-6 pt-4 mb-0 border-b border-gray-100;
 }
 
 :deep(.ant-tabs-tab) {
-  padding: 12px 16px;
-  font-weight: 500;
+  @apply px-4 py-3 font-medium text-gray-600 hover:text-indigo-600 transition-colors;
 }
 
-:deep(.ant-tabs-content) {
-  padding: 16px 24px 24px;
+:deep(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  @apply text-indigo-600 font-semibold;
+}
+
+:deep(.ant-tabs-ink-bar) {
+  @apply bg-indigo-600;
 }
 </style>
+

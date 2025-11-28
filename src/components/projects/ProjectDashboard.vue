@@ -1,11 +1,11 @@
 <template>
-  <div class="project-dashboard">
-    <a-card class="dashboard-card" :bordered="false">
-      <div class="dashboard-header">
-        <div class="header-content">
-          <div class="header-text">
-            <h1 class="header-title">Gestion des Projets</h1>
-            <p class="header-subtitle">{{ projectsSubtitle }}</p>
+  <div class="min-h-screen p-3 md:p-6">
+    <a-card class="w-full min-h-[80vh] mx-auto rounded-2xl md:rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-indigo-500/10 overflow-hidden" :bordered="false">
+      <div class="relative mb-0 after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#667eea] after:to-[#764ba2] after:rounded-sm">
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-6">
+          <div class="flex-1">
+            <h1 class="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
+            <p class="text-sm md:text-base text-gray-500 font-medium m-0">{{ projectsSubtitle }}</p>
           </div>
           <ActionButton
               v-if="hasRole('manager')"
@@ -18,16 +18,16 @@
         </div>
       </div>
 
-      <a-divider style="margin: 24px 0"/>
+      <a-divider class="my-6 border-indigo-500/10"/>
 
       <ProjectFilters
           v-model="filters"
           @filter="handleFilter"
       />
 
-      <a-divider style="margin: 24px 0"/>
+      <a-divider class="my-6 border-indigo-500/10"/>
 
-      <div class="dashboard-content">
+      <div class="m-0">
         <ProjectList
             :projects="filteredProjects"
             @edit="handleEdit"
@@ -155,136 +155,21 @@ async function confirmDelete() {
 </script>
 
 <style scoped>
-.project-dashboard {
-  min-height: 100vh;
+@reference "../../index.css";
+
+:deep(.ant-card-body) {
+  @apply p-6 md:p-10 bg-gradient-to-br from-[#667eea]/[0.02] to-[#764ba2]/[0.02];
 }
 
-.dashboard-card {
-  width: 100%;
-  min-height: 80vh;
-  margin: 0 auto;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
-  overflow: hidden;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+:deep(.ant-list) {
+  @apply bg-transparent;
 }
 
-.dashboard-card :deep(.ant-card-body) {
-  padding: 40px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
-}
-
-.dashboard-header {
-  margin-bottom: 0;
-  position: relative;
-}
-
-.dashboard-header::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  border-radius: 2px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-}
-
-.header-text {
-  flex: 1;
-}
-
-.header-title {
-  font-size: 20px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0 0 8px 0;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
-}
-
-.header-subtitle {
-  font-size: 16px;
-  color: #718096;
-  margin: 0;
-  font-weight: 500;
-}
-
-.dashboard-content {
-  margin: 0;
-}
-
-.dashboard-content :deep(.ant-list) {
-  background: transparent;
-}
-
-.dashboard-content :deep(.ant-list-grid .ant-col) {
-  margin-bottom: 24px;
+:deep(.ant-list-grid .ant-col) {
+  @apply mb-6;
 }
 
 :deep(.ant-divider) {
-  border-color: rgba(102, 126, 234, 0.1);
-}
-
-@media (max-width: 768px) {
-  .project-dashboard {
-    padding: 12px;
-  }
-
-  .dashboard-card {
-    border-radius: 16px;
-  }
-
-  .dashboard-card :deep(.ant-card-body) {
-    padding: 24px;
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .header-title {
-    font-size: 26px;
-  }
-
-  .header-subtitle {
-    font-size: 14px;
-  }
-
-  :deep(.ant-divider) {
-    margin: 16px 0 !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-card {
-    border-radius: 12px;
-  }
-
-  .dashboard-card :deep(.ant-card-body) {
-    padding: 20px;
-  }
-
-  .header-title {
-    font-size: 22px;
-  }
-
-  .header-subtitle {
-    font-size: 13px;
-  }
+  @apply border-indigo-500/10;
 }
 </style>

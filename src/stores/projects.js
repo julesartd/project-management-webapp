@@ -88,7 +88,7 @@ export const useProjectsStore = defineStore('projects', () => {
             t.status === TASK_STATUS.COMPLETED
         ).length
         const percentage = Math.round((completed / projectTasks.length) * 100)
-        return Math.max(0, Math.min(100, percentage)) // Assure que c'est entre 0 et 100
+        return Math.max(0, Math.min(100, percentage))
     }
 
     function isProjectOverdue(projectId) {

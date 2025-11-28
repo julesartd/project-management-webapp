@@ -1,13 +1,16 @@
 <template>
-  <a-card hoverable class="project-card" @click="$emit('view')">
+  <a-card hoverable class="group relative rounded-2xl overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl border-none shadow-sm" @click="$emit('view')">
+    <!-- Top Gradient Border -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#667eea] to-[#764ba2] transition-all duration-300 group-hover:h-1.5"></div>
+
     <template #title>
-      <a-typography-text strong>{{ project.name }}</a-typography-text>
+      <a-typography-text strong class="text-lg font-semibold text-gray-900">{{ project.name }}</a-typography-text>
     </template>
 
     <template #extra>
       <a-dropdown v-if="canManage" @click.stop>
-        <a-button type="text" size="small">
-          <MoreOutlined />
+        <a-button type="text" size="small" class="hover:bg-indigo-50 rounded-md transition-colors">
+          <MoreOutlined class="text-indigo-500 text-lg" />
         </a-button>
         <template #overlay>
           <a-menu>
@@ -22,35 +25,39 @@
       </a-dropdown>
     </template>
 
-    <a-typography-paragraph :ellipsis="{ rows: 2 }" :content="project.description" class="project-description" />
+    <div class="mb-4 text-gray-500 text-sm leading-relaxed min-h-[44px] line-clamp-2">
+      {{ project.description }}
+    </div>
 
-    <a-space direction="vertical" style="width: 100%">
-      <div>
-        <CalendarOutlined />
-        <span class="ml-2">
-          Échéance : {{ formattedDeadline }}
-        </span>
+    <a-space direction="vertical" class="w-full">
+      <div class="flex items-center text-gray-500 font-medium text-sm">
+        <CalendarOutlined class="text-indigo-500 mr-2" />
+        <span>Échéance : {{ formattedDeadline }}</span>
       </div>
 
-      <a-progress
-          :percent="progress"
-          :status="status"
-          :show-info="true"
-          :format="() => `${progress}%`"
-          size="small"
-      />
+      <div class="my-3">
+        <a-progress
+            :percent="progress"
+            :status="status"
+            :show-info="true"
+            :format="() => `${progress}%`"
+            size="small"
+            :stroke-color="{ '0%': '#667eea', '100%': '#764ba2' }"
+            class="mb-0"
+        />
+      </div>
 
-      <a-space>
-        <a-tag color="blue">
+      <div class="flex items-center gap-2 flex-wrap">
+        <a-tag color="blue" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           {{ taskCount }} tâche(s)
         </a-tag>
-        <a-tag v-if="isOverdue" color="red">
+        <a-tag v-if="isOverdue" color="red" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           En retard
         </a-tag>
-        <a-tag v-else-if="isAtRisk" color="orange">
+        <a-tag v-else-if="isAtRisk" color="orange" class="rounded-md px-2.5 py-0.5 font-semibold shadow-sm border-none">
           À risque
         </a-tag>
-      </a-space>
+      </div>
     </a-space>
   </a-card>
 </template>
@@ -112,125 +119,3 @@ const isAtRisk = computed(() =>
 )
 </script>
 
-<style scoped>
-.project-card {
-  cursor: pointer;
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  background: white;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  transition: height 0.3s ease;
-}
-
-.project-card:hover::before {
-  height: 6px;
-}
-
-.project-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
-}
-
-.project-card :deep(.ant-card-head) {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  padding: 16px 20px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
-}
-
-.project-card :deep(.ant-card-head-title) {
-  font-size: 17px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.project-card :deep(.ant-card-body) {
-  padding: 20px;
-}
-
-.project-description {
-  margin-bottom: 16px;
-  color: rgba(0, 0, 0, 0.65);
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 44px;
-}
-
-.ml-2 {
-  margin-left: 8px;
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
-}
-
-.project-card :deep(.ant-progress) {
-  margin: 12px 0;
-}
-
-.project-card :deep(.ant-progress-inner) {
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 10px;
-}
-
-.project-card :deep(.ant-progress-bg) {
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-.project-card :deep(.ant-tag) {
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-.project-card :deep(.ant-space-item) {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.project-card :deep(.anticon) {
-  color: #667eea;
-  font-size: 16px;
-}
-
-/* Dropdown styling */
-.project-card :deep(.ant-dropdown-trigger) {
-  transition: all 0.3s ease;
-  border-radius: 6px;
-  padding: 4px;
-}
-
-.project-card :deep(.ant-dropdown-trigger:hover) {
-  background: rgba(102, 126, 234, 0.1);
-}
-
-@media (max-width: 768px) {
-  .project-card {
-    border-radius: 12px;
-  }
-
-  .project-card :deep(.ant-card-head),
-  .project-card :deep(.ant-card-body) {
-    padding: 16px;
-  }
-
-  .project-description {
-    font-size: 13px;
-    min-height: 40px;
-  }
-}
-</style>
