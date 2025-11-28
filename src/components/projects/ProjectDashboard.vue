@@ -4,7 +4,7 @@
       <div class="relative mb-0 after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#667eea] after:to-[#764ba2] after:rounded-sm">
         <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-6">
           <div class="flex-1">
-            <h1 class="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
+            <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 leading-tight tracking-tight">Gestion des Projets</h1>
             <p class="text-sm md:text-base text-gray-500 font-medium m-0">{{ projectsSubtitle }}</p>
           </div>
           <ActionButton
@@ -155,21 +155,28 @@ async function confirmDelete() {
 </script>
 
 <style scoped>
-@reference "../../index.css";
+@import "../../index.css";
 
 :deep(.ant-card-body) {
-  @apply p-6 md:p-10 bg-gradient-to-br from-[#667eea]/[0.02] to-[#764ba2]/[0.02];
+  padding: 1.5rem;
+  background: linear-gradient(to bottom right, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+}
+
+@media (min-width: 768px) {
+  :deep(.ant-card-body) {
+    padding: 2.5rem;
+  }
 }
 
 :deep(.ant-list) {
-  @apply bg-transparent;
+  background-color: transparent;
 }
 
 :deep(.ant-list-grid .ant-col) {
-  @apply mb-6;
+  margin-bottom: 1.5rem;
 }
 
 :deep(.ant-divider) {
-  @apply border-indigo-500/10;
+  border-color: rgba(99, 102, 241, 0.1);
 }
 </style>
