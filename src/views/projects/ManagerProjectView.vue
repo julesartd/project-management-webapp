@@ -102,6 +102,7 @@
       type="warning"
       show-icon
       class="my-4 rounded-lg border-orange-200 bg-orange-50"
+      style="margin-bottom: 15px;"
     >
       <template #message>
         <span class="font-medium">{{ nonValidatedTasks.length }} tâche(s) en attente de validation</span>
