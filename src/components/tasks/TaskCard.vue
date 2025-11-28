@@ -206,4 +206,18 @@ const isAssignedToCurrentUser = computed(() => {
 :deep(.ant-card-body) {
   @apply p-4;
 }
+
+:deep(.ant-btn .anticon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+:deep(.ant-btn span) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>

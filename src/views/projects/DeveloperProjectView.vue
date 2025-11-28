@@ -1,7 +1,6 @@
 <template>
   <div class="w-full">
     <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
-      <!-- Back button -->
       <div class="flex items-center mb-4">
         <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
           <ArrowLeftOutlined />
@@ -9,13 +8,11 @@
         </a-button>
       </div>
 
-      <!-- Project Title and Description -->
       <div class="mb-4">
         <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
         <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
       </div>
 
-      <!-- Create Task Button -->
       <div class="flex justify-end">
         <ActionButton
           variant="primary"

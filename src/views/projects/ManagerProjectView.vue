@@ -1,7 +1,6 @@
 <template>
   <div class="w-full">
     <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
-      <!-- Back button -->
       <div class="flex items-center mb-4">
         <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
           <ArrowLeftOutlined />
@@ -9,13 +8,11 @@
         </a-button>
       </div>
 
-      <!-- Project Title and Description - Always on top on mobile -->
       <div class="mb-4">
         <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
         <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
       </div>
 
-      <!-- Badge and Button - Below title on mobile -->
       <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
         <a-tag v-if="isProjectManager" color="green" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg shadow-sm w-full md:w-auto">
           <CheckCircleOutlined class="flex items-center justify-center" style="font-size: 16px;" />
@@ -515,7 +512,6 @@ function handleOpenTask(task) {
 <style scoped>
 @import "../../index.css";
 
-/* Hide Kanban tab on mobile */
 @media (max-width: 768px) {
   :deep(.ant-tabs-tab:first-child) {
     display: none !important;
