@@ -45,15 +45,17 @@
             </div>
 
             
-            <div v-if="element.comments?.length" class="text-xs text-gray-400 mt-2 flex justify-end">
+            <div v-if="element.comments?.length" class="text-xs text-gray-400  flex justify-end">
               <a-button
                 type="text"
                 size="small"
                 @click.stop="handleComment(element)"
-                class="inline-flex items-center gap-1 px-1 h-auto text-gray-400 hover:text-indigo-600"
+                class="px-1 h-auto text-gray-400 hover:text-indigo-600"
               >
-                <CommentOutlined />
-                <span>{{ element.comments.length }}</span>
+                <div class="flex items-center gap-1 leading-none">
+                  <CommentOutlined class="text-base" />
+                  <span>{{ element.comments.length }}</span>
+                </div>
               </a-button>
             </div>
           </div>
@@ -64,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, toRef } from "vue";
+import { computed, toRef } from "vue";
 import draggable from "vuedraggable";
 import { CommentOutlined } from '@ant-design/icons-vue'
 import { TASK_STATUS } from "@/stores/tasks";
