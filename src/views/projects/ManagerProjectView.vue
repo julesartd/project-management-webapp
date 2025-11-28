@@ -1,13 +1,12 @@
 <template>
   <div class="w-full">
     <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
-      <div class="flex items-center mb-4">
-        <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
-          <ArrowLeftOutlined />
-          <span class="hidden sm:inline">Retour</span>
+      <div class="back-button-wrapper">
+        <a-button type="text" @click="$emit('back')" class="back-button">
+          <ArrowLeftOutlined class="back-icon" />
+          <span class="back-text">Retour</span>
         </a-button>
       </div>
-
       <div class="mb-4">
         <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h1>
         <p class="text-sm md:text-base text-gray-600">{{ project.description }}</p>
@@ -587,5 +586,24 @@ function handleOpenTask(task) {
   align-items: baseline;
   line-height: 1;
 }
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5px;
+  padding: 4px;
+  font-size: 1rem; 
+}
+
+.back-icon {
+  font-size: 1em;
+  line-height: 1;  
+  vertical-align: middle;
+}
+
+.back-text {
+  line-height: 1; 
+}
+
 </style>
 
