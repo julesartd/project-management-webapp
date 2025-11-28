@@ -23,7 +23,10 @@
         @start="checkCanDrag"
       >
         <template #item="{ element }">
-          <div class="bg-white rounded p-3 cursor-grab shadow-sm transition-all duration-200 hover:bg-indigo-50 hover:shadow-md border border-transparent hover:border-indigo-100" @dblclick="openTask(element)">
+          <div class="bg-white rounded p-3 cursor-grab shadow-sm transition-all duration-200 hover:bg-indigo-50 hover:shadow-md border border-transparent hover:border-indigo-100" 
+            @dblclick="openTask(element)"
+            :title="'Double-cliquez pour ouvrir la tâche'"
+          >
             <p class="font-semibold m-0 text-gray-800">{{ element.title }}</p>
             <p class="text-xs text-gray-500 mt-1 mb-0" v-if="element.deadline">
               {{ formatDate(element.deadline) }}
