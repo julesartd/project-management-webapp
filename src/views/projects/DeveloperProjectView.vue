@@ -1,10 +1,10 @@
 <template>
   <div class="w-full">
     <div class="bg-white rounded-xl shadow-sm mb-4 p-4 md:p-6 border border-gray-100">
-      <div class="flex items-center mb-4">
-        <a-button type="text" @click="$emit('back')" class="flex items-center gap-2">
-          <ArrowLeftOutlined />
-          <span class="hidden sm:inline">Retour</span>
+      <div class="back-button-wrapper">
+        <a-button type="text" @click="$emit('back')" class="back-button">
+          <ArrowLeftOutlined class="back-icon" />
+          <span class="back-text">Retour</span>
         </a-button>
       </div>
 
@@ -229,6 +229,29 @@ function handleAddComment(commentData) {
 
 :deep(.ant-tabs-ink-bar) {
   @apply bg-indigo-600;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  font-size: 1rem;
+}
+
+.back-icon {
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-text {
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
 }
 </style>
 

@@ -550,7 +550,6 @@ function handleOpenTask(task) {
   @apply bg-indigo-600;
 }
 
-/* Center badge icons */
 :deep(.ant-tag) {
   @apply flex items-center;
 }
