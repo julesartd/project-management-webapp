@@ -25,9 +25,16 @@
           <span class="font-semibold text-gray-700 hidden sm:block">{{ user?.name }}</span>
         </div>
 
-        <a-button type="text" danger @click="authStore.logout()" class="flex items-center hover:bg-red-50 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5">
-          <template #icon><LogoutOutlined /></template>
-          <span class="hidden sm:inline">Déconnexion</span>
+        <a-button
+          type="text"
+          danger
+          @click="authStore.logout()"
+          class="logout-btn"
+        >
+          <div class="flex items-center gap-2">
+            <LogoutOutlined />
+            <span class="hidden sm:inline">Déconnexion</span>
+          </div>
         </a-button>
       </div>
     </a-layout-header>
